@@ -1,0 +1,585 @@
+body {
+  font-family: "Nunito Sans", sans-serif !important;
+}
+
+:root {
+  --white-color: #fff;
+  --dark-text-color: #1c1c1c;
+  --text-secondary-color: #00000066;
+  --tabs-background-color: #f4f7ff;
+  --background-color: #ecf0f1;
+  --tab-text-color: #1d60fc;
+  --admin-panel-content-bgcolor: #f5f5f5;
+  --border-all: 1px solid #00000033;
+}
+
+.over-flow-class-all {
+  overflow-x: hidden;
+  height: 87vh;
+  scrollbar-width: none;
+}
+
+.toggle-Button {
+  position: fixed;
+  /* Changed to fixed */
+  left: 190px;
+  /* Set to the left edge */
+  top: 15px;
+  /* Set to the top edge */
+  z-index: 100;
+  background-color: var(--white-color);
+  border: var(--border-all);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  height: 35px;
+  width: 40px;
+}
+
+.toggle-Button.closed {
+  left: 15px;
+  /* Set to the left edge for closed state */
+}
+
+.admin-Panel-Logo {
+  width: 94px;
+}
+
+.tabs-main-parent {
+  height: 93vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar {
+  height: 100vh;
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: var(--white-color);
+  color: var(--dark-text-color);
+  overflow-x: hidden;
+  padding-top: 16px;
+}
+
+.tabs-parent {
+  margin-top: 24px;
+}
+
+.admin-Panel-Logo {
+  display: block;
+  transition: 0.3s;
+  margin: 0px 20px;
+}
+
+.menu-tabs {
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 35px;
+  color: var(--dark-text-color);
+  display: block;
+  transition: 0.3s;
+  margin: 0px 16px;
+  padding: 2px 16px;
+  border-radius: 12px;
+}
+
+/* Hover state for menu tabs */
+.sidebar .menu-tabs:hover {
+  background-color: var(--tabs-background-color);
+}
+
+/* Active state for the currently active menu tab */
+.menu-tabs.active {
+  background-color: var(--tabs-background-color);
+  color: var(--tab-text-color);
+}
+
+/* Active state with hover effect */
+.menu-tabs.active:hover {
+  background-color: var(--tabs-background-color);
+  color: var(--tab-text-color);
+}
+
+#main-left-panel {
+  background: var(--admin-panel-content-bgcolor);
+  height: 100vh;
+  position: relative;
+}
+
+.main-left-panel-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding-left: 20px;
+  padding-right: 20px;
+  justify-content: space-between;
+  border-bottom: var(--border-all);
+  background-color: var(--white-color);
+}
+
+/* Hide sidebar on smaller screens */
+@media (max-width: 600px) {
+  .sidebar {
+    width: 0;
+    position: fixed;
+    z-index: 2;
+    /* Make sure the sidebar overlays the content */
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: var(--white-color);
+    overflow-x: hidden;
+    transition: 0.3s;
+  }
+
+  #main-left-panel {
+    margin-left: 0;
+    position: relative;
+  }
+
+  .toggle-Button {
+    position: fixed;
+    /* Changed to fixed */
+    left: 15px;
+    /* Set to the left edge */
+    top: 15px;
+    /* Set to the top edge */
+    z-index: 3;
+  }
+
+  .admin-Panel-Logo {
+    margin-left: 135px;
+  }
+
+  .user {
+    margin-right: 70px;
+  }
+}
+
+/* -----------------------------## Main content css starts from here ##----------------------------- */
+
+/* ----------- search bar css here -------------- */
+.input-box {
+  position: relative;
+  height: 36px;
+  width: 290px;
+  width: 100%;
+  background: var(--admin-panel-content-bgcolor);
+  margin: 0 5px;
+  border-radius: 12px;
+}
+
+.input-box i,
+.input-box .button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.input-box i {
+  left: 20px;
+  font-size: 16px;
+  color: #707070;
+}
+
+.input-box input {
+  color: #08080899;
+  height: 100%;
+  width: 100%;
+  outline: none;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  padding: 0 45px;
+  background-color: transparent;
+}
+
+.input-box .button {
+  right: 20px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #fff;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 6px;
+  background-color: #ecbd00;
+  cursor: pointer;
+}
+
+.input-box .button.clicked {
+  transform: translateY(-50%) scale(0.98);
+}
+
+/* Responsive */
+@media screen and (max-width: 500px) {
+  .input-box {
+    height: 36px;
+    margin: 0 8px;
+  }
+
+  .input-box i {
+    left: 12px;
+    font-size: 25px;
+  }
+
+  .input-box input {
+    padding: 0px 40px;
+  }
+
+  .input-box .button {
+    right: 12px;
+    font-size: 14px;
+    padding: 8px 18px;
+  }
+}
+
+@media (max-width: 400px) {
+  .user {
+    margin-right: 5px;
+  }
+
+  .input-box {
+    height: 36px;
+    width: 100%;
+    margin: 0 8px;
+  }
+
+  .input-box i {
+    left: 12px;
+    font-size: 16px;
+  }
+
+  .input-box input {
+    padding: 0px 40px;
+  }
+
+  .input-box .button {
+    right: 12px;
+    font-size: 14px;
+    padding: 8px 18px;
+  }
+}
+
+/* -------------user and notification css here --------------- */
+
+.notifications {
+  color: var(--gray);
+  font-size: 1.25rem;
+  display: flex;
+  border-right: var(--border-all);
+  padding-right: 10px;
+}
+
+.notifications i::after {
+  --size: 0.45em;
+  content: "";
+  background-color: var(--primary);
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  position: absolute;
+  margin-left: calc(-1 * var(--size));
+}
+
+.userContainer .user {
+  display: grid;
+  grid-template-areas: "img name caret";
+  gap: var(--spacing-xs);
+  align-items: center;
+}
+
+.user .img {
+  --size: 32px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--size);
+  background-image: url("https://i.pravatar.cc/50?img=20");
+  background-size: cover;
+  border: var(--border-all);
+  box-shadow: 0 0 0 0.1em var(--gray-lighter);
+}
+
+.user .name {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.userContainer .user .caret {
+  font-size: 1rem;
+  color: var(--gray);
+}
+
+/* <!---------------------header css ends here------------------> */
+
+/* <!---------------------content css starts from here------------------> */
+.form-main-parent {
+  background-color: var(--white-color) !important;
+  border-radius: 12px !important;
+}
+
+.form-main-heading {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.add-more-button {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 28px;
+  /* margin-bottom: 16px; */
+  text-decoration: none;
+}
+
+.form-main-heading-two {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  margin-top: 20px;
+  color: rgba(8, 8, 8, 1);
+}
+
+/* ----------------checkbox css is here --------------- */
+.card-container {
+  position: relative;
+}
+
+.popup-description {
+  display: none;
+  position: absolute;
+  top: 50px;
+  /* Adjust this value based on your layout */
+  left: 20px;
+  /* Added unit to left */
+  right: 20px;
+  /* Added unit to right */
+  width: 85%;
+  /* Adjust this value based on your layout */
+  background-color: var(--tabs-background-color);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 2px 6px 14px 0px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.popup-icon:hover .popup-description {
+  display: block;
+}
+
+.custom-form-check {
+  cursor: pointer;
+}
+
+/* popup css ends here  */
+
+.custom-form-check {
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 1);
+  padding: 16px 25px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  cursor: pointer !important;
+  transition: border 0.3s ease, color 0.3s ease;
+  position: relative;
+  /* Add relative positioning */
+}
+
+.custom-form-check input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 100%;
+  border: 1px solid rgba(0, 0, 0, 1);
+  background-color: rgba(255, 255, 255, 1);
+  position: absolute;
+  right: 25px;
+  cursor: pointer !important;
+  transition: border-color 0.3s ease;
+}
+
+.custom-form-check input:checked {
+  border-color: rgba(29, 96, 252, 1);
+  background-color: rgba(29, 96, 252, 1);
+  border-radius: 100%;
+}
+
+.custom-form-check input {
+  border-radius: 100% !important;
+
+}
+
+.custom-form-check.active {
+  border: 1px solid rgba(29, 96, 252, 1);
+  /* background-color: #75b5e6; */
+}
+
+.custom-form-check.active .tabs-main-heading {
+  color: rgba(29, 96, 252, 1);
+  /* background-color: #75b5e6; */
+  background-image: url('https://www.pngkey.com/png/full/21-215619_checkmark-in-circle-clip-white-check-mark-symbol.png') !important;
+}
+
+.checkbox-text-parent {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  justify-content: start;
+  align-items: center;
+  padding: 8px 0px;
+}
+
+.tabs-main-heading {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(96, 96, 96);
+  cursor: pointer !important;
+}
+
+.tabs-two-heading {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(101, 101, 101, 0.6);
+  cursor: pointer !important;
+}
+
+/* ------------------service form css is here -------------------- */
+/* -------------form css form here------------------ */
+.form-main-parent {
+  background-color: var(--white-color) !important;
+  border-radius: 12px !important;
+}
+
+.border-here {
+  border: var(--border-all);
+}
+
+.form-main-heading {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.form-main-heading-two {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  margin-top: 20px;
+}
+
+.upload-image-slaut {
+  width: 140px;
+  border: var(--border-all);
+  border-radius: 8px;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  color: rgba(8, 8, 8, 1);
+}
+
+.form-inputs-parent {
+  background-color: rgba(245, 245, 245, 1) !important;
+  border-radius: 8px !important;
+  height: 36px !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.form-control {
+  font-size: 12px !important;
+  font-weight: 300 !important;
+}
+
+.form-text-area-parent {
+  background-color: rgba(245, 245, 245, 1) !important;
+  border-radius: 8px !important;
+  height: 95px !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.form-control {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 30px;
+}
+
+.dropdown-icon {
+  position: absolute;
+  top: 40%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.btn-form-submit {
+  background-color: rgba(29, 96, 252, 1) !important;
+  border-radius: 8px !important;
+  padding: 6px 24px !important;
+  color: var(--white-color) !important;
+}
+
+.add-more-button {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 28px;
+  /* margin-bottom: 16px; */
+  text-decoration: none;
+}
+
+.details-text-one {
+  color: var(--text-secondary-color);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.details-text-two {
+  color: rgb(90, 90, 90);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.accordion-button {
+  border: none;
+  background-color: none;
+  box-shadow: none;
+}
+
+.accordion {
+  border: none;
+  background-color: none;
+  box-shadow: none;
+}
+
+.accordion-button:focus,
+.accordion-button:active {
+  box-shadow: none !important;
+  border: transparent !important;
+}
+
+.accordion-button:not(.collapsed) {
+  color: rgba(29, 96, 252, 1) !important;
+  background-color: transparent !important;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .125) !important;
+}

@@ -1,0 +1,409 @@
+body {
+    font-family: "Nunito Sans", sans-serif !important;
+  }
+
+  :root {
+    --white-color: #fff;
+    --dark-text-color: #1c1c1c;
+    --text-secondary-color: #00000066;
+    --tabs-background-color: #f4f7ff;
+    --background-color: #ecf0f1;
+    --tab-text-color: #1d60fc;
+    --admin-panel-content-bgcolor: #f5f5f5;
+    --border-all: 1px solid #00000033;
+  }
+  .over-flow-class-all{
+    overflow-x: hidden;
+    height: 87vh;
+    scrollbar-width: none;
+  }
+  .toggle-Button {
+    position: fixed; /* Changed to fixed */
+    left: 190px; /* Set to the left edge */
+    top: 15px; /* Set to the top edge */
+    z-index: 100;
+    background-color: var(--white-color);
+    border: var(--border-all);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    height: 35px;
+    width: 40px;
+  }
+
+  .toggle-Button.closed {
+    left: 15px; /* Set to the left edge for closed state */
+  }
+
+  .admin-Panel-Logo {
+    width: 94px;
+  }
+  .tabs-main-parent {
+    height: 93vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .sidebar {
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: var(--white-color);
+    color: var(--dark-text-color);
+    overflow-x: hidden;
+    padding-top: 16px;
+  }
+
+  .tabs-parent {
+    margin-top: 24px;
+  }
+
+  .admin-Panel-Logo {
+    display: block;
+    transition: 0.3s;
+    margin: 0px 20px;
+  }
+  .menu-tabs {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 35px;
+    color: var(--dark-text-color);
+    display: block;
+    transition: 0.3s;
+    margin: 0px 16px;
+    padding: 2px 16px;
+    border-radius: 12px;
+  }
+
+  /* Hover state for menu tabs */
+  .sidebar .menu-tabs:hover {
+    background-color: var(--tabs-background-color);
+  }
+
+  /* Active state for the currently active menu tab */
+  .menu-tabs.active {
+    background-color: var(--tabs-background-color);
+    color: var(--tab-text-color);
+  }
+
+  /* Active state with hover effect */
+  .menu-tabs.active:hover {
+    background-color: var(--tabs-background-color);
+    color: var(--tab-text-color);
+  }
+
+  #main-left-panel {
+    background: var(--admin-panel-content-bgcolor);
+    height: 100vh;
+    position: relative;
+  }
+  .main-left-panel-content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding-left: 20px;
+    padding-right: 20px;
+    justify-content: space-between;
+    border-bottom: var(--border-all);
+    background-color: var(--white-color);
+  }
+  /* Hide sidebar on smaller screens */
+  @media (max-width: 600px) {
+    .sidebar {
+      width: 0;
+      position: fixed;
+      z-index: 2; /* Make sure the sidebar overlays the content */
+      top: 0;
+      left: 0;
+      height: 100%;
+      background-color: var(--white-color);
+      overflow-x: hidden;
+      transition: 0.3s;
+    }
+    #main-left-panel {
+      margin-left: 0;
+      position: relative;
+    }
+    .toggle-Button {
+      position: fixed; /* Changed to fixed */
+      left: 15px; /* Set to the left edge */
+      top: 15px; /* Set to the top edge */
+      z-index: 3;
+    }
+    .admin-Panel-Logo {
+      margin-left: 135px;
+    }
+    .user {
+      margin-right: 70px;
+    }
+  }
+
+  /* -----------------------------## Main content css starts from here ##----------------------------- */
+
+  /* ----------- search bar css here -------------- */
+  .input-box {
+    position: relative;
+    height: 36px;
+    width: 290px;
+    width: 100%;
+    background: var(--admin-panel-content-bgcolor);
+    margin: 0 5px;
+    border-radius: 12px;
+  }
+  .input-box i,
+  .input-box .button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .input-box i {
+    left: 20px;
+    font-size: 16px;
+    color: #707070;
+  }
+  .input-box input {
+    color: #08080899;
+    height: 100%;
+    width: 100%;
+    outline: none;
+    font-size: 12px;
+    font-weight: 500;
+    border: none;
+    padding: 0 45px;
+    background-color: transparent;
+  }
+  .input-box .button {
+    right: 20px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    background-color: #ecbd00;
+    cursor: pointer;
+  }
+  .input-box .button.clicked {
+    transform: translateY(-50%) scale(0.98);
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 500px) {
+    .input-box {
+      height: 36px;
+      margin: 0 8px;
+    }
+    .input-box i {
+      left: 12px;
+      font-size: 25px;
+    }
+    .input-box input {
+      padding: 0px 40px;
+    }
+    .input-box .button {
+      right: 12px;
+      font-size: 14px;
+      padding: 8px 18px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .user {
+      margin-right: 5px;
+    }
+    .input-box {
+      height: 36px;
+      width: 100%;
+      margin: 0 8px;
+    }
+    .input-box i {
+      left: 12px;
+      font-size: 16px;
+    }
+    .input-box input {
+      padding: 0px 40px;
+    }
+    .input-box .button {
+      right: 12px;
+      font-size: 14px;
+      padding: 8px 18px;
+    }
+  }
+  /* -------------user and notification css here --------------- */
+
+  .notifications {
+    color: var(--gray);
+    font-size: 1.25rem;
+    display: flex;
+    border-right: var(--border-all);
+    padding-right: 10px;
+  }
+
+  .notifications i::after {
+    --size: 0.45em;
+    content: "";
+    background-color: var(--primary);
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--size);
+    position: absolute;
+    margin-left: calc(-1 * var(--size));
+  }
+
+  .userContainer .user {
+    display: grid;
+    grid-template-areas: "img name caret";
+    gap: var(--spacing-xs);
+    align-items: center;
+  }
+
+  .user .img {
+    --size: 32px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--size);
+    background-image: url("https://i.pravatar.cc/50?img=20");
+    background-size: cover;
+    border: var(--border-all);
+    box-shadow: 0 0 0 0.1em var(--gray-lighter);
+  }
+
+  .user .name {
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .userContainer .user .caret {
+    font-size: 1rem;
+    color: var(--gray);
+  }
+
+  /* <!---------------------header css ends here------------------> */
+
+  /* <!---------------------content css starts from here------------------> */
+  .form-main-parent {
+    background-color: var(--white-color) !important;
+    border-radius: 12px !important;
+  }
+  .form-main-heading {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 28px;
+  }
+  .add-more-button {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 28px;
+    /* margin-bottom: 16px; */
+    text-decoration: none;
+  }
+  .form-main-heading-two {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    margin-top: 20px;
+    color: rgba(8, 8, 8, 1);
+  }
+  /* ---------------drop down ----------------- */
+  .dropdown{
+    display: none;
+  }
+  .dropdown-toggle{
+    border: var(--border-all) !important;
+  }
+  /* ---------------crousel css from here ------------- */
+  .crousel-main-parent{
+    display: block;
+  }
+
+  @media screen and (max-width: 780px) {
+    .dropdown{
+      display: block;
+    }
+    .crousel-main-parent{
+      display: none;
+    }
+  }
+
+
+  .crousel-text-parent {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border: var(--border-all) !important;
+    width: fit-content !important;
+    border-radius: 40px !important;
+    padding: 0 !important;
+  }
+  .crousel-text-parent :focus, .crousel-text-parent :active{
+    border: var(--tab-text-color) !important;
+  }
+  .crousel-text {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    padding: 6px 24px !important;
+    line-height: 18px !important;
+    color: var(--text-secondary-color) !important;
+    border: none !important;
+    border-radius: 40px !important;
+    background: none !important;
+  }
+  .nav-link.active, .nav-link:focus {
+    border: var(--tab-text-color) !important;
+    color: var(--tab-text-color) !important;
+    box-shadow: none !important;
+  }
+  .crousel-icon {
+    color: black !important;
+  }
+  .nav-tabs {
+    border: 0 !important;
+    padding: 10px;
+  }
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 40px !important;
+  }
+
+
+  /* cards css is here  */
+  .card-white {
+    background-color: var(--white-color);
+    border: var(--border-all);
+    border-radius: 8px;
+    height: 100%;
+    /* cursor: pointer; */
+  }
+  .card-white:hover {
+    border-color: var(--tab-text-color); /* New border color on hover */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* New shadow on hover */
+  }
+  .cards-main-heading{
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .cards-main-heading-two{
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .status-text{
+    color: rgba(12, 132, 67, 1);
+    padding:4px 22px;
+    border-radius: 40px;
+    width: fit-content;
+    border: 1px solid rgba(12, 132, 67, 1);
+    background-color: rgba(12, 132, 68, 0.085);
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+  }
+  .uil-ellipsis-v{
+    cursor: pointer;
+  }

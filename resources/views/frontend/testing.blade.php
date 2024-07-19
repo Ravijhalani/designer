@@ -1,0 +1,1 @@
+<a href="{{ $meetingUrl }}" target="_blank">Join Zoom Meeting</a>
