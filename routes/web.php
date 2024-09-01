@@ -9,7 +9,8 @@ use App\Http\Controllers\ZoomController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\AvailablityController;
 use App\Http\Controllers\SearchController;
-
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\MeetingController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,10 +23,18 @@ use App\Http\Controllers\SearchController;
 */
 
 Route::get('/', function () {
+
+    if(isset($_REQUEST['razorpay_payment_id'])){
+        return redirect()->route('start.meeting');
+    }
+
     return view('home');
 })->name('home');
 
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth','jwt.check_expiration']], function() {
+
+    Route::get('/meeting/{meeting_id}', [MeetingController::class, 'meeting'])->name('start.meeting');
+
 
     Route::get('/generate-meeting-url', [ZoomController::class, 'generateMeetingUrl']);
     Route::get('/dashboard', [ProfileController::class, 'index'])->name('dashboard');
@@ -50,16 +59,36 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('/experience/update/{id}', [ProfileController::class, 'ExperienceUpdate'])->name('profile.experience.update');
 
         Route::get('/review',    [ProfileController::class, 'review'])->name('profile.review');
+        Route::get('/details/{id?}',    [ProfileController::class, 'details'])->name('user.detail');
+        Route::get('/user/homepage',    [ProfileController::class, 'myProfile'])->name('user.profile');
+
+        
 
     });
+
+
+    Route::prefix('booking')->group(function() {
+        
+        Route::get('/',    [BookingController::class, 'index'])->name('booking.index');
+        Route::get('/stepForms',    [BookingController::class, 'stepForms'])->name('get-step-forms');
+        Route::post('/save/{service}',   [BookingController::class, 'saveBooking'])->name('booking.service.save');
+        Route::get('/{service}',    [BookingController::class, 'booking'])->name('booking.service');
+        Route::post('/{service}',   [BookingController::class, 'bookingStep2'])->name('booking.service-step-2');
+       
+    });
+
 
     Route::prefix('service')->group(function() {
         Route::get('/', [ServiceController::class, 'index'])->name('service.index');
+        Route::get('/ajax', [ServiceController::class, 'indexAjax'])->name('service.type.ajax');
         Route::get('/add', [ServiceController::class, 'create'])->name('service.add');
         Route::get('/edit/{service_id}', [ServiceController::class, 'edit'])->name('service.edit');
+
         Route::post('/store', [ServiceController::class, 'store'])->name('service.store');
         Route::post('/update/{service_id}', [ServiceController::class, 'update'])->name('service.update');
     });
+
+
 
     Route::prefix('availablity')->group(function() {
         Route::get('/', [AvailablityController::class, 'index'])->name('availablity.index');
@@ -70,6 +99,8 @@ Route::group(['middleware' => ['auth']], function() {
 
         Route::post('/save-schedules', [AvailablityController::class, 'saveSchedules'])->name('save.schedules');
         Route::get('/schedules/{schedule_id}', [AvailablityController::class, 'schedulesForm'])->name('schedules.forms');
+        Route::get('/form/{id}', [AvailablityController::class, 'formData'])->name('availablity.form.content');
+
 
     });
 
@@ -77,7 +108,7 @@ Route::group(['middleware' => ['auth']], function() {
 });
 
 
-Route::get('/search', [SearchController::class, 'search'])->name('search');
+Route::get('search', [SearchController::class, 'search'])->name('search');
 Route::post('/search', [SearchController::class, 'searchFilter'])->name('post.search');
 
 

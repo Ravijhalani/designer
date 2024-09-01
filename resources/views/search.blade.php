@@ -1,358 +1,311 @@
-@extends('layouts.app')
-
-@section('title')
-    YouAsk | Search
-@endsection
-
+@extends('frontend.Layouts.main')
 @section('content')
-    <div class="hero6">
-        <div class="hero-wapper">
-            <div class="scroll-btn">
-                <a href="#home6-category-area"><img src="assets/images/icon/home6-scroll-icon.svg" alt="" /></a>
+    @push('css')
+        <link rel="stylesheet" href="{{ asset('allAssets/dashboard.css') }}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="{{ asset('assets/search/styles.css') }}" />
+    @endpush
+    <style>
+        /* Right-Side Full-Screen Modal with Increased Width */
+        .modal-dialog-right {
+            position: fixed;
+            top: 0;
+            right: 0;
+            margin: 0;
+            width: 100%;
+            max-width: 600px;
+            /* Increased width */
+            height: 100%;
+            /* Full-screen height */
+            border-radius: 0;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .modal-dialog-right.show {
+            transform: translateX(0);
+        }
+
+        /* Optional: Style the modal content */
+        .modal-content {
+            height: 100%;
+            overflow-y: auto;
+            /* Allows scrolling if content overflows */
+        }
+    </style>
+    <!---------------------content starts from here------------------>
+    <div class="inner-panel-parent">
+        <div class="m-4 mt-2 inner-panel-content w-100">
+            <div class="top-head">
+                <div class="mt-4 d-flex justify-content-between align-items-center">
+                    <p class="filter-text-one m-0">Jobs</p>
+                    <p class="filter-text-two m-0 text-secondary">Showing results {{ count($services) }} of
+                        {{ $limits }}</p>
+                </div>
+                <hr class="mt-3" />
             </div>
-            <div class="container-fluid">
+            <div class="top-grid-panel">
+                <div class="d-flex justify-content-between align-items-center flex-wrap my-4">
+                    <div class="search-bar-parent">
+                        <div class="left-panel-header w-100" id="searchBox">
+                            <div class="input-box">
+                                <i class="uil uil-search"></i>
+                                <input type="text" placeholder="Search here..."
+                                    style="border: 1px solid #00000033; border-radius: 8px; background-color: white;" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-buttons gap-3">
+                        <div>
+                            <p class="cards-main-short-text m-0">Sort by:</p>
+                        </div>
+                        <div class="btn-group bg-white" style="width: 20vw;">
+                            <button type="button"
+                                class="btn btn-outline dropdown-toggle w-100 d-flex justify-content-between align-items-center"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Default
+                            </button>
+                            <ul class="dropdown-menu w-100">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Separated link</a></li>
+                            </ul>
+                        </div>
+                        <div class="d-flex flex-row flex-wrap justify-content-center align-items-center gap-3">
+                            <div class="grid-view-button button-class-border"><i class="uil uil-th-large active px-2 py-2 "
+                                    aria-hidden="true"></i></div>
+                            <div class="list-view-button button-class-border"><i class="uil uil-list-ul px-2 py-2 "
+                                    aria-hidden="true"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="row">
-                    <div class="col-lg-12">
-                        <div class="hero-content">
-                        <h1>1020+ <span>Category</span> Job’s Here</h1>
-                            <p>
-                                Jobs are available on your skills, perfect jobs to make bright
-                                future & get your choose jobs become a strong.
-                            </p>
-                            <div class="job-search-area">
-                                <form>
-                                    <div class="form-inner job-title">
-                                        <input name="search" value="{{(isset($_GET['search']) ? $_GET['search']: '' )}}" type="text" placeholder="What jobs are you looking for ? " />
-                                    </div>
-                                    <div class="form-inner location">
-                                        <select name="service_category" class="select1">
-                                            <option value="">Select Category</option>
-                                            <option @if(isset($_GET['service_category'])) @if($_GET['service_category'] == "JOB_REFERRAL")  selected @endif @endif value="JOB_REFERRAL">Job & Referal</option>
-                                            <option @if(isset($_GET['service_category'])) @if($_GET['service_category'] == "JOB_POSITION_GUIDANCE")  selected @endif @endif value="JOB_POSITION_GUIDANCE">Job Position Guidance</option>
-                                            <option @if(isset($_GET['service_category'])) @if($_GET['service_category'] == "TECH_EXPERT")  selected @endif @endif value="TECH_EXPERT">Tech Expert</option>
-                                            <option @if(isset($_GET['service_category'])) @if($_GET['service_category'] == "CAREER_GUIDANCE")  selected @endif @endif value="CAREER_GUIDANCE">Career Guidance</option>
-                                            <option @if(isset($_GET['service_category'])) @if($_GET['service_category'] == "RESUME_REVIEW")  selected @endif @endif  value="RESUME_REVIEW">Resume Review</option>
-                                            <option @if(isset($_GET['service_category'])) @if($_GET['service_category'] == "MOCK_INTERVIEW")  selected @endif @endif value="MOCK_INTERVIEW">Mock Interview</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-inner">
-                                        <button type="submit" class="primry-btn-5">Search</button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            @if(count($experienceSkillList) > 0)
-                            <div class="suggest-tag">
-                                <h6><i class="bi bi-bookmark-fill"></i>Suggested Tag:</h6>
-                                <ul>
-                                    @foreach ($experienceSkillList as $item)
-                                    <li><a href="javascript:void(0)">{{$item['name']}},</a>  </li>                                        
-                                    @endforeach
-                                </ul>
-                            </div>
-                            @endif
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="job-listing-area pt-120 mb-120">
-        <div class="container">
-            <div class="row g-lg-4 gy-5">
-                <div class="col-lg-4 order-lg-1 order-2">
-                    <div class="job-sidebar">
-                        <div class="job-widget style-1 mb-20">
-                            <div class="check-box-item">
-                                <h5 class="job-widget-title">Company Lists</h5>
-                                <div class="checkbox-container">
-                                    <ul>
-                                        @foreach ($companyList as $key=>$item)
-                                        <li>
-                                            <label class="containerss">
-                                                <input data-operator="eq" name="company__name[]" value="{{$item['value']}}" class="company__name filtersData" type="checkbox" />
-                                                <span class="checkmark"></span>
-                                                <span class="text">{{$item['value']}}</span>
-                                                <span class="qty">({{$item['value_count']}})</span>
-                                            </label>
-                                        </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="job-widget mb-20">
-                            <div class="check-box-item">
-                                <h5 class="job-widget-title">Type of Designations</h5>
-                                <div class="checkbox-container">
-                                    <ul>
-                                        @foreach ($designationList as $item)
-                                        <li>
-                                            <label class="containerss">
-                                                <input data-operator="eq" name="designation__name[]" value="{{$item['value']}}"  class="designation__name filtersData" type="checkbox" />
-                                                <span class="checkmark"></span>
-                                                <span class="text">{{$item['value']}}</span>
-                                                <span class="qty">({{$item['value_count']}})</span>
-                                            </label>
-                                        </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="job-widget mb-20">
-                            <div class="check-box-item">
-                                <h5 class="job-widget-title">Job Location Type</h5>
-                                <div class="checkbox-container">
-                                    <ul>
-                                        @foreach ($jobLocationType as $item)
-                                        <li>
-                                            <label class="containerss">
-                                                <input data-operator="eq" name="job_location_type[]" value="{{$item['value']}}"  class="job_location_type filtersData" type="checkbox" />
-                                                <span class="checkmark"></span>
-                                                <span class="text">{{$item['value']}}</span>
-                                                <span class="qty">({{$item['value_count']}})</span>
-                                            </label>
-                                        </li>
-                                        @endforeach
-                                        
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{--<div class="job-widget mb-20">
-                            <div class="check-box-item">
-                                <h5 class="job-widget-title mb-15">Salary Range</h5>
-                                <div class="range-wrap">
-                                    <div class="slider-labels">
-                                        <div class="caption">
-                                            <span id="slider-range-value1"></span>K
+                    <div class="col-lg-4 for-left-row-height pt-3">
+                        <div class="accordion accordion-flush " id="accordionFlushExample">
+                            <div class="accordion-item p-0 m-0 white-background-card">
+                                <h2 class="accordion-header p-0 m-0" id="flush-headingOne">
+                                    <button class="custom-accordion-button p-0 m-0" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseOne" aria-expanded="true"
+                                        aria-controls="flush-collapseOne">
+                                        <div class="p-3 w-100">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <p class="filter-text-one">Filter jobs</p>
+                                                <p class="filter-text-two">Reset</p>
+                                            </div>
+                                            <hr class="p-0 m-0" />
                                         </div>
-                                        -
-                                        <div class="text-right caption">
-                                            <span id="slider-range-value2"></span>K
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <form>
-                                                <input type="hidden" name="min-value" value="" />
-                                                <input type="hidden" name="max-value" value="" />
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div id="slider-range"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="salary-container">
-                                    <ul>
-                                        <li>
-                                            <input class="form-check-input" type="radio" id="salary-1"
-                                                name="showInputBox" value="salary-1" />
-                                            <div class="content">
-                                                <span class="text">$5K-$15K</span>
-                                                <span class="qty">(80)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <input class="form-check-input" type="radio" id="salary-2"
-                                                name="showInputBox" value="salary-2" />
-                                            <div class="content">
-                                                <span class="text">$20K-$30K</span>
-                                                <span class="qty">(100)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <input class="form-check-input" type="radio" id="salary-3"
-                                                name="showInputBox" value="salary-3" />
-                                            <div class="content">
-                                                <span class="text">$35K-$50K</span>
-                                                <span class="qty">(100)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <input class="form-check-input" type="radio" id="salary-4"
-                                                name="showInputBox" value="salary-4" />
-                                            <div class="content">
-                                                <span class="text">$55K-$70K</span>
-                                                <span class="qty">(120)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <input class="form-check-input" type="radio" id="salary-5"
-                                                name="showInputBox" value="salary-5" />
-                                            <div class="content">
-                                                <span class="text">$75K-$100K</span>
-                                                <span class="qty">(30)</span>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>--}}
-
-                        {{--<div class="job-widget mb-20">
-                            <div class="check-box-item">
-                                <h5 class="job-widget-title mb-10">Date of Post</h5>
-                                <ul class="tags">
-                                    <li><a href="job-listing1.html">Technology,</a></li>
-                                    <li><a href="job-listing1.html">Marketing,</a></li>
-                                    <li><a href="job-listing1.html">Sales,</a></li>
-                                    <li><a href="job-listing1.html">Transport,</a></li>
-                                    <li><a href="job-listing1.html">Medical,</a></li>
-                                    <li><a href="job-listing1.html">Design,</a></li>
-                                    <li><a href="job-listing1.html">Data Analyst,</a></li>
-                                    <li><a href="job-listing1.html">Development,</a></li>
-                                    <li><a href="job-listing1.html">Non-Profit,</a></li>
-                                    <li><a href="job-listing1.html">Manager,</a></li>
-                                    <li><a href="job-listing1.html">Health,</a></li>
-                                </ul>
-                            </div>
-                        </div>--}}
-
-                        {{--<div class="job-widget-btn">
-                            <a class="primry-btn-2 lg-btn text-center" href="#">Go to Job Alert</a>
-                        </div> --}}
-                    </div>
-                </div>
-                <div class="col-lg-8 order-lg-2 order-1">
-                    <div class="job-listing-wrrap">
-                        <div class="row g-4 mb-25">
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <p class="show-item">Showing results {{count($services)}} jobs list</p>
-                            </div>
-                            <div class="col-lg-6 d-flex align-items-center justify-content-lg-end">
-                                <div class="grid-select-area">
-                                    <div class="select-area">
-                                        <select class="select1">
-                                            <option value="0">Sort By(Default)</option>
-                                            <option value="1">Full Time</option>
-                                            <option value="2">Part Time</option>
-                                            <option value="3">Remote</option>
-                                            <option value="3">Internship</option>
-                                            <option value="3">Freelance</option>
-                                        </select>
-                                    </div>
-                                    {{-- <div class="grid-area">
-                                        <ul>
-                                            <li>
-                                                <a href="job-listing2.html">
-                                                    <svg width="16" height="16" viewbox="0 0 16 16"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M6.26106 6.95674H0.695674C0.311464 6.95674 0 6.64527 0 6.26106V0.695674C0 0.311464 0.311464 0 0.695674 0H6.26106C6.64527 0 6.95674 0.311464 6.95674 0.695674V6.26106C6.95674 6.64527 6.64527 6.95674 6.26106 6.95674Z">
-                                                        </path>
-                                                        <path
-                                                            d="M15.304 6.95674H9.73864C9.35443 6.95674 9.04297 6.64527 9.04297 6.26106V0.695674C9.04297 0.311464 9.35443 0 9.73864 0H15.304C15.6882 0 15.9997 0.311464 15.9997 0.695674V6.26106C15.9997 6.64527 15.6882 6.95674 15.304 6.95674Z">
-                                                        </path>
-                                                        <path
-                                                            d="M6.26106 16.0004H0.695674C0.311464 16.0004 0 15.689 0 15.3048V9.73937C0 9.35517 0.311464 9.0437 0.695674 9.0437H6.26106C6.64527 9.0437 6.95674 9.35517 6.95674 9.73937V15.3048C6.95674 15.689 6.64527 16.0004 6.26106 16.0004Z">
-                                                        </path>
-                                                        <path
-                                                            d="M15.304 16.0004H9.73864C9.35443 16.0004 9.04297 15.689 9.04297 15.3048V9.73937C9.04297 9.35517 9.35443 9.0437 9.73864 9.0437H15.304C15.6882 9.0437 15.9997 9.35517 15.9997 9.73937V15.3048C15.9997 15.689 15.6882 16.0004 15.304 16.0004Z">
-                                                        </path>
-                                                    </svg>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="active" href="job-listing1.html">
-                                                    <svg width="22" height="16" viewbox="0 0 22 16"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M1.91313 0C0.856731 0 0 0.893707 0 1.99656C0 3.09861 0.856731 3.99157 1.91313 3.99157C2.96953 3.99157 3.82626 3.09861 3.82626 1.99656C3.82626 0.893707 2.96953 0 1.91313 0Z">
-                                                        </path>
-                                                        <path
-                                                            d="M1.91313 6.00464C0.856731 6.00464 0 6.8976 0 8.00045C0 9.1025 0.856731 9.99621 1.91313 9.99621C2.96953 9.99621 3.82626 9.1025 3.82626 8.00045C3.82626 6.8976 2.96953 6.00464 1.91313 6.00464Z">
-                                                        </path>
-                                                        <path
-                                                            d="M1.91313 12.0085C0.856731 12.0085 0 12.9023 0 14.0043C0 15.1064 0.856731 16.0001 1.91313 16.0001C2.96953 16.0001 3.82626 15.1064 3.82626 14.0043C3.82626 12.9023 2.96953 12.0085 1.91313 12.0085Z">
-                                                        </path>
-                                                        <path
-                                                            d="M20.561 0.495117H6.95229C6.15787 0.495117 5.51367 1.16716 5.51367 1.99665C5.51367 2.82545 6.15782 3.49744 6.95229 3.49744H20.561C21.3554 3.49744 21.9996 2.82545 21.9996 1.99665C21.9996 1.16716 21.3554 0.495117 20.561 0.495117Z">
-                                                        </path>
-                                                        <path
-                                                            d="M20.561 6.49878H6.95229C6.15787 6.49878 5.51367 7.17077 5.51367 8.00032C5.51367 8.82911 6.15782 9.5011 6.95229 9.5011H20.561C21.3554 9.5011 21.9996 8.82911 21.9996 8.00032C21.9996 7.17077 21.3554 6.49878 20.561 6.49878Z">
-                                                        </path>
-                                                        <path
-                                                            d="M20.561 12.5034H6.95229C6.15787 12.5034 5.51367 13.1754 5.51367 14.0042C5.51367 14.833 6.15782 15.5049 6.95229 15.5049H20.561C21.3554 15.5049 21.9996 14.833 21.9996 14.0042C21.9996 13.1754 21.3554 12.5034 20.561 12.5034Z">
-                                                        </path>
-                                                    </svg>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div> --}}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" id="serviceListData">
-                            @foreach($services as $k=>$v)
-                            <div class="col-lg-12 mb-30">
-                                <div class="job-listing-card">
-                                    <div class="job-top">
-                                        <div class="job-list-content">
-                                            <div class="company-area">
-                                                <div class="logo">
-                                                    <img src="assets/images/bg/company-logo/company-01.png"
-                                                        alt="" />
+                                    </button>
+                                </h2>
+                                <div id="flush-collapseOne" class="accordion-collapse collapse show"
+                                    aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body p-0">
+                                        <div class="p-3">
+                                            <div class="d-flex flex-column gap-3">
+                                                <div class="btn-group w-100">
+                                                    <select name="company__name[]"
+                                                        class="company__name filtersData form-control">
+                                                        <option value="">Select company</option>
+                                                        @foreach ($companyList as $key => $item)
+                                                            <option data-operator="eq" value="{{ $item['value'] }}">
+                                                                {{ $item['value'] }}
+                                                                ({{ $item['value_count'] }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
-                                                <div class="company-details">
-                                                    <div class="name-location">
-                                                        <h5>
-                                                            <a href="job-details.html">{{$v['title']}}</a>
-                                                        </h5>
+                                                <div class="btn-group w-100">
+                                                    <select name="designation__name[]"
+                                                        class="designation__name filtersData form-control">
+                                                        <option value="">Select Designation</option>
+                                                        @foreach ($designationList as $key => $item)
+                                                            <option data-operator="eq" value="{{ $item['value'] }}">
+                                                                {{ $item['value'] }}
+                                                                ({{ $item['value_count'] }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <div class="btn-group w-100">
+                                                    <select name="job_location_type[]"
+                                                        class="job_location_type filtersData form-control">
+                                                        <option value="">Select Job Location Type</option>
+                                                        @foreach ($jobLocationType as $item)
+                                                            <option data-operator="eq" value="{{ $item['value'] }}">
+                                                                {{ $item['value'] }}
+                                                                ({{ $item['value_count'] }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-lg-8 mt-3">
+                        <div class="over-flow-class for-row-height">
+                            <ol class="list list-view-filter" id="serviceListData">
+
+                                
+                                @foreach ($services as $k => $v)
+                                    <li class="list-content">
+                                        <div>
+                                            <!-- card -->
+                                            <div class="white-background-card px-3 py-3">
+                                                <div
+                                                    class="d-flex flex-row justify-content-between align-items-center flex-wrap">
+                                                    <div class="d-flex justify-content-start align-items-start gap-2 mt-2">
+                                                        <div class="image-div">
+                                                            <img src="{{ asset('assets/search/Images/Ellipse.png') }}"
+                                                                alt="company-logos">
+                                                        </div>
+                                                        <div>
+                                                            <a href="{{ route('user.detail', $v['users']['id']) }}">
+                                                                <p class="cards-main-heading m-0">
+                                                                    {{ ucwords(strtolower($v['users']['first_name'])) . ' ' . ucwords(strtolower($v['users']['last_name'])) }}
+
+                                                                </p>
+                                                            </a>
+                                                            <p class="cards-main-heading-two">{{ $v['title'] }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="cards-down-icon">
+                                                        <i class="uil uil-bookmark-full fs-5 fw-lighter"></i>
+                                                        <p class="job-position m-0 fw-lighter">Save</p>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="d-flex justify-content-start align-items-center flex-wrap my-3">
+                                                    <div
+                                                        class="d-flex justify-content-start align-items-center gap-2 border-end px-2">
+                                                        <i class="uil uil-bag"></i>
+                                                        <p class="job-tipe m-0">{{ $v['service_category'] }}</p>
+                                                    </div>
+
+                                                </div>
+                                                <div class="d-flex justify-content-start align-items-center my-3">
+                                                    <div
+                                                        class="d-flex justify-content-start align-items-center gap-2 px-2">
+                                                        <i class="uil uil-bag"></i>
+                                                        <p class="job-tipe m-0">Bachlor's of degree in computer science,
+                                                            computer enginnering or similar Working Knowl.....</p>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="d-flex justify-content-start align-items-center my-3 flex-wrap gap-2">
+                                                    @if (isset($v['service_skills']) > 0)
+                                                        @foreach ($v['service_skills'] as $k => $skill)
+                                                            <div
+                                                                class="status-text-parent d-flex justify-content-center align-items-center gap-2 px-3 py-2 flex-wrap mt-2">
+                                                                <p class="status-text m-0">{{ $skill['skill']['name'] }}
+                                                                </p>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
+
+                                                <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+                                                    <div
+                                                        class="d-flex justify-content-between w-100 align-items-center gap-2 px-2">
+                                                        <p class="job-tipe m-0 fw-lighter">
+                                                            {{ \Carbon\Carbon::parse($v['created_at'])->diffForHumans() }}
+                                                        </p>
+                                                        <a href="#"
+                                                            class="status-text m-0 fs-6 fw-bold text-decoration-none"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#detailsModal{{ $v['id'] }}">
+                                                            View Details →
+                                                        </a>
+
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="job-discription">
-                                                <ul>
-                                                    <li>
-                                                        <p>
-                                                            <span class="title">Amount : {{$v['amount']}}</span>  
-                                                           
-                                                        </p>
-                                                        
-                                                    </li>
-                                                    <li>
-                                                        <p>
-                                                            <span class="time">Experience Years : {{$v['experience_years']}} </span>
-                                                        </p>
-                                                    </li>
-                                                    <li>
-                                                        <p>
-                                                            <span class="title">Category:</span> {{$v['service_category']}} 
-                                                        </p>
-                                                    </li>
 
+                                        </div>
+                                    </li>
 
-                                                </ul>
+                                    <!-- Full-Screen Height Right-Side Modal -->
+                                    <div class="modal" id="detailsModal{{ $v['id'] }}" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-right modal-fullscreen-height">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-primary text-white">
+                                                    <h5 class="modal-title" id="detailsModalLabel">
+                                                        {{ str_replace('_', ' ', $v['service_category']) }}</h5>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!-- Service Details Content -->
+                                                    <div class="mb-4">
+                                                        <div class="border p-3 rounded shadow-sm">
+                                                            <div class="row">
+                                                                <div class="col-md-6 mb-3">
+                                                                    <strong class="d-block">Title:</strong>
+                                                                    <span class="text-muted">{{ $v['title'] }}</span>
+                                                                </div>
+                                                                <div class="col-md-6 mb-3">
+                                                                    <strong class="d-block">Status:</strong>
+                                                                    <span class="text-muted">{{ $v['status'] }}</span>
+                                                                </div>
+                                                                <div class="col-md-6 mb-3">
+                                                                    <strong class="d-block">Amount:</strong>
+                                                                    <span class="text-muted">₹
+                                                                        {{ number_format($v['amount'], 2) }}</span>
+                                                                </div>
+                                                                <div class="col-md-12 mb-3">
+                                                                    <strong class="d-block">Description:</strong>
+                                                                    <p class="text-muted">
+                                                                        {{ $v['description'] ?? 'Not Available' }}.
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="bookmark">
-                                            <i class="bi bi-bookmark-fill"></i>
-                                        </div>
                                     </div>
-                                    <div class="job-type-apply">
-                                        <div class="job-type">
-                                            <span class="light-green"> {{$v['job_location_type']}}</span>
-                                           
-                                        </div>
-                                        <div class="apply-btn">
-                                            <a href="job-details.html"><span><img
-                                                        src="assets/images/icon/apply-ellipse.svg"
-                                                        alt="" /></span>Apply Now</a>
-                                        </div>
-                                    </div>
-                                </div>
+
+
+                                @endforeach
+
+
+                                <!-- if you want to add more then you can use these  -->
+                            </ol>
+
+                            <div class="w-100 d-flex justify-content-center align-items-center mt-4">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination">
+                                        <li class="page-item">
+                                            <a class="page-link" href="#" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
-                            @endforeach
-                          
+
                         </div>
                     </div>
                 </div>
@@ -362,126 +315,173 @@
 @endsection
 
 @push('js')
+    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script> --}}
+    <script src="{{ asset('assets/search/index.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+
     <script>
-       $(document).on('change','.filtersData',function(){
+        function reviewTab() {
 
-            var company__name = { values: [] };
-            var designation__name = { values: [] };
-            var job_location_type = { values: [] };
-
-
-            $('.company__name:checked').each(function() {
-                var value = $(this).val();
-                var operator = $(this).attr('data-operator'); // Assuming the operator is always "eq"                
-                company__name.values.push({ value: value, operator: operator });
-            })
-
-            $('.designation__name:checked').each(function() {
-                var value = $(this).val();
-                var operator = $(this).attr('data-operator'); // Assuming the operator is always "eq"                
-                designation__name.values.push({ value: value, operator: operator });
-            })
-
-            $('.job_location_type:checked').each(function() {
-                var value = $(this).val();
-                var operator = $(this).attr('data-operator'); // Assuming the operator is always "eq"                
-                job_location_type.values.push({ value: value, operator: operator });
-            })
-            
-
-
-
-        $.ajax({
-                url: '{{route('post.search')}}',
-                type: 'POST',
-                dataType:"json",
-                data: {_token:'{{csrf_token()}}',company__name:company__name,designation__name:designation__name,job_location_type:job_location_type},
-                beforeSend: function() {
-
+            $.ajax({
+                url: "{{ route('profile.review') }}",
+                method: 'GET',
+                beforeSend: function(data) {
+                    $('#review-forms').html(
+                        '<center><i class="fa fa-spinner fa-spin" style="font-size:84px"></i></center>');
                 },
-                success:function(data){
+                success: function(data) {
+                    $('#review-forms').html(data);
+                },
+                error: function(data) {
+                    console.log('Error:', data);
+                }
+            })
 
-                    html = "";
-
-                    $.each(data.data,function(key,value){
-
-                        html+= `
-                    
-                    <div class="col-lg-12 mb-30">
-                                <div class="job-listing-card">
-                                    <div class="job-top">
-                                        <div class="job-list-content">
-                                            <div class="company-area">
-                                                <div class="logo">
-                                                    <img src="assets/images/bg/company-logo/company-01.png" alt="" />
-                                                </div>
-                                                <div class="company-details">
-                                                    <div class="name-location">
-                                                        <h5>
-                                                            <a href="job-details.html">${value.title}</a>
-                                                        </h5>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="job-discription">
-                                                <ul>
-                                                    <li>
-                                                        <p>
-                                                            <span class="title">Amount : ${value.amount}</span>  
-                                                           
-                                                        </p>
-                                                        
-                                                    </li>
-                                                    <li>
-                                                        <p>
-                                                            <span class="time">Experience Years : ${value.experience_years} </span>
-                                                        </p>
-                                                    </li>
-                                                    <li>
-                                                        <p>
-                                                            <span class="title">Category:</span>  ${value.service_category}
-                                                        </p>
-                                                    </li>
+        }
 
 
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="bookmark">
-                                            <i class="bi bi-bookmark-fill"></i>
-                                        </div>
-                                    </div>
-                                    <div class="job-type-apply">
-                                        <div class="job-type">
-                                            <span class="light-green">  ${value.job_location_type} </span>
-                                           
-                                        </div>
-                                        <div class="apply-btn">
-                                            <a href="job-details.html"><span><img
-                                                        src="assets/images/icon/apply-ellipse.svg"
-                                                        alt="" /></span>Apply Now</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        $(document).on('change', '.filtersData', function() {
 
-                    `;
+            var company__name = {
+                values: []
+            };
+            var designation__name = {
+                values: []
+            };
+            var job_location_type = {
+                values: []
+            };
 
-                    $("#serviceListData").html(html);
 
-                    })
+            if ($('.company__name option:selected').val() !== "") {
+                company__name.values.push({
+                    value: $('.company__name option:selected').val(),
+                    operator: $('.company__name option:selected').attr('data-operator')
+                });
+            }
 
-                    
+            if ($('.designation__name option:selected').val() !== "") {
 
-                } 
-            }).done(function (data) {
-               
+                designation__name.values.push({
+                    value: $('.designation__name option:selected').val(),
+                    operator: $('.designation__name option:selected').attr('data-operator')
+                });
+            }
+
+            if ($('.job_location_type option:selected').val() !== "") {
+                job_location_type.values.push({
+                    value: $('.job_location_type option:selected').val(),
+                    operator: $('.job_location_type option:selected').attr('data-operator')
+                });
+            }
+
+
+            console.log({
+                "designation__name": designation__name,
+                "company__name": company__name,
+                "job_location_type": job_location_type
             });
 
 
-       })
+            $.ajax({
+                url: '{{ route('post.search') }}',
+                type: 'POST',
+                dataType: "json",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    company__name: company__name,
+                    designation__name: designation__name,
+                    job_location_type: job_location_type
+                },
+                beforeSend: function() {
+
+                },
+                success: function(data) {
+
+                    var items = data.data.items;
+                    html = "";
+
+                    $.each(items, function(key, value) {
+
+                        html += `
+
+                                        <li class="list-content">
+                                            <div >
+
+                                    <div class="white-background-card px-3 py-3">
+                                        <div class="d-flex flex-row justify-content-between align-items-center flex-wrap">
+                                        <div class="d-flex justify-content-start align-items-start gap-2 mt-2">
+                                            <div class="image-div">
+                                            <img src="{{ asset('assets/search/Images/Ellipse.png') }}" alt="company-logos">
+                                            </div>
+                                            <div>
+
+                                            <a href="profile/details/${value.users.id}">
+                                                <p class="cards-main-heading m-0 text-capitalize">${value.users.first_name+' '+value.users.last_name}</p>
+                                            </a>
+
+                                            <p class="cards-main-heading-two">${value.title}</p>
+                                            </div>
+                                        </div>
+                                        <div class="cards-down-icon">
+                                            <i class="uil uil-bookmark-full fs-5 fw-lighter"></i>
+                                            <p class="job-position m-0 fw-lighter">Save</p>
+                                        </div>
+                                        </div>
+                                        <div class="d-flex justify-content-start align-items-center flex-wrap my-3">
+                                        <div class="d-flex justify-content-start align-items-center gap-2 border-end px-2">
+                                            <i class="uil uil-bag"></i>
+                                            <p class="job-tipe m-0">${value.service_category}</p>
+                                        </div>
+
+                                        </div>
+                                        <div class="d-flex justify-content-start align-items-center my-3">
+                                        <div class="d-flex justify-content-start align-items-center gap-2 px-2">
+                                            <i class="uil uil-bag"></i>
+                                            <p class="job-tipe m-0">Bachlor's of degree in computer science, computer enginnering or similar Working Knowl.....</p>
+                                        </div>
+                                        </div>
+                                        <div class="d-flex justify-content-start align-items-center my-3 flex-wrap gap-2">
+                                            @if (isset($v['service_skills']) > 0)
+                                                @foreach ($v['service_skills'] as $k => $skill)
+                                                    <div class="status-text-parent d-flex justify-content-center align-items-center gap-2 px-3 py-2 flex-wrap mt-2">
+                                                        <p class="status-text m-0">{{ $skill['skill']['name'] }}</p>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+                                        <div class="d-flex justify-content-between w-100 align-items-center gap-2 px-2">
+                                            <p class="job-tipe m-0 fw-lighter">${moment(value.created_at).fromNow()}</p>
+                                            <a href="../Search-page-inner/index.html" class="status-text m-0 fs-6 fw-bold text-decoration-none">Apply Now →</a>
+                                        </div>
+                                        </div>
+                                        </div>
+
+                                    </div>
+                                </li>
+
+                        `;
 
 
 
+                    })
+
+                    $("#serviceListData").html(html);
+
+                }
+            }).done(function(data) {
+
+            });
+
+
+        })
     </script>
+    {{-- <script src="{{ asset('allAssets/index.js') }}"></script> --}}
+
+    @stack('inlinejs')
 @endpush

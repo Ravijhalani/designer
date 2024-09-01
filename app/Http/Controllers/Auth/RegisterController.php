@@ -65,7 +65,7 @@ class RegisterController extends Controller
             if(!$user) {
                 $store['status'] = 0;    
                 User::create($store);
-                return response()->json(['status'=>1,'message'=>'Otp send successfully','encoded_mobile_number'=>\Crypt::encrypt($request->mobile)]);
+                return response()->json(['status'=>1,'message'=>'Otp send successfully','mobile'=>$request->mobile]);
             }
     
             if($user->status==1) {
@@ -74,7 +74,7 @@ class RegisterController extends Controller
             $user->otp = $store['otp'];
             $user->save();
 
-            return response()->json(['status'=>1,'message'=>'Otp send successfully','encoded_mobile_number'=>\Crypt::encrypt($request->mobile)]);
+            return response()->json(['status'=>1,'message'=>'Otp send successfully','mobile'=>$request->mobile]);
         }
         catch (\Exception $e){
             return response()->json(['status'=>2,'message'=>'There is something issue in our system Please wait...']);

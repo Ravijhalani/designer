@@ -9,7 +9,7 @@
     $date = Carbon::now()->isoFormat('D MMMM YYYY');
 @endphp
     <div class="dashboard-content-parent mx-4 my-3">
-        <h4 style="font-weight: 600; color: #1d60fc">Hello {{ auth()->user()->first_name }}👋</h4>
+        <h4 style="font-weight: 600; color: #1d60fc">Hello {{ ucfirst(auth()->user()->name) }}👋</h4>
         <p style="
     font-size: 14px;
     line-height: 18px;
@@ -32,32 +32,89 @@
                     <div class="stepwizard">
                         <div class="stepwizard-row setup-panel row-cols-md-4 row-cols-sm-2 row-cols-1 row">
                             <div class="stepwizard-step col pb-4">
-                                <a href="#step-1" type="button" class="btn btn-primary btn-circle btn-wizard-active">1</a>
+                                <a href="javascript:void(0)" type="button" 
+                                
+                                @if(auth()->user()->current_profile_fill_step != 0 )  
+                                    style="background-color: #f4f7f9" 
+                                @endif
+                                
+                                {{ auth()->user()->current_profile_fill_step == 0 ? '':'disabled' }}
+                                 
+                                class="btn {{ auth()->user()->current_profile_fill_step == 0 ? 'btn-primary':'btn-default' }}  btn-circle btn-wizard-active"
+                                 
+                                 >1</a>
                                 <p class="mb-1">Basic information</p>
                                 <p class="secondary-text">Fill up your basic details</p>
-                                <a href="{{ route('basicinfo') }}" class="btn btn-form-submit">Fill details</a>
+                                
+                                @if(auth()->user()->current_profile_fill_step == 0 )  
+                                    <a href="{{ route('basicinfo').'#basic-information' }}" class="btn btn-form-submit">Fill details</a>
+                                @endif
 
                             </div>
                             <div class="stepwizard-step col pb-4">
-                                <a href="#step-2" type="button" class="btn btn-default btn-circle btn-wizard"
-                                    disabled="disabled" style="background-color: #f4f7f9">2</a>
+                                
+                                <a href="javascript:void(0)" type="button" 
+                                    @if(auth()->user()->current_profile_fill_step != 1 )  
+                                        style="background-color: #f4f7f9" 
+                                    @endif
+                                    {{ auth()->user()->current_profile_fill_step == 1 ? 'disabled':'' }}
+                                    class="btn {{ auth()->user()->current_profile_fill_step == 1 ? 'btn-primary':'btn-default' }}  btn-circle btn-wizard-active"
+                                >
+                                2
+                                </a>
+
+
                                 <p class="mb-1">Education</p>
                                 <p class="secondary-text">
                                     Complete your education details
                                 </p>
+
+                                @if(auth()->user()->current_profile_fill_step == 1 )  
+                                    <a href="{{ route('basicinfo').'#education-information' }}" class="btn btn-form-submit">Fill details</a>
+                                @endif
+
                             </div>
                             <div class="stepwizard-step col pb-4">
-                                <a href="#step-3" type="button" class="btn btn-default btn-circle btn-wizard"
-                                    disabled="disabled" style="background-color: #f4f7f9">3</a>
+                                {{-- <a href="#step-3" type="button" class="btn btn-default btn-circle btn-wizard"
+                                    disabled="disabled" style="background-color: #f4f7f9">3</a> --}}
+
+
+                                <a href="javascript:void(0)" type="button" 
+                                    @if(auth()->user()->current_profile_fill_step != 2 )  
+                                        style="background-color: #f4f7f9" 
+                                    @endif
+                                    {{ auth()->user()->current_profile_fill_step == 2 ? 'disabled':'' }}
+                                    class="btn {{ auth()->user()->current_profile_fill_step == 2 ? 'btn-primary':'btn-default' }}  btn-circle btn-wizard-active"
+                                >
+                                3
+                                </a>
+
                                 <p class="mb-1">Professional info</p>
                                 <p class="secondary-text">
                                     Complete your professional details
 
                                 </p>
+
+                                @if(auth()->user()->current_profile_fill_step == 2 )  
+                                    <a href="{{ route('basicinfo').'#professional-information' }}" class="btn btn-form-submit">Fill details</a>
+                                @endif
+
                             </div>
                             <div class="stepwizard-step col pb-4">
-                                <a href="#step-4" type="button" class="btn btn-default btn-circle btn-wizard"
-                                    disabled="disabled" style="background-color: #f4f7f9">4</a>
+                                {{-- <a href="#step-4" type="button" class="btn btn-default btn-circle btn-wizard"
+                                    disabled="disabled" style="background-color: #f4f7f9">4</a> --}}
+
+
+                                    <a href="{{ route('basicinfo').'#review-information' }}" type="button" 
+                                    @if(auth()->user()->current_profile_fill_step != 3 )  
+                                        style="background-color: #f4f7f9" 
+                                    @endif
+                                    {{ auth()->user()->current_profile_fill_step == 3 ? 'disabled':'' }}
+                                    class="btn {{ auth()->user()->current_profile_fill_step == 3 ? 'btn-primary':'btn-default' }}  btn-circle btn-wizard-active"
+                                >
+                                4
+                                </a>
+
                                 <p class="mb-1">Information review</p>
                                 <p class="secondary-text">Review your information</p>
                             </div>
@@ -90,7 +147,7 @@
             })
 
         }
-
+console.log("{{auth()->user()->id}}")
 
     </script>
     <script src="{{ asset('allAssets/index.js') }}"></script>

@@ -5,7 +5,7 @@
             {{-- <input type="text" class="form-control form-inputs-parent" name="school_id" id="school_id" placeholder="Highest education level" /> --}}
 
             <div class="dropdown-wrapper">
-                <select class="form-control form-inputs-parent" name="degree_name" id="degree_name">
+                <select class="form-control form-inputs-parent select2" name="degree_name" id="degree_name">
                     <option value="" disabled selected>Select Level</option>
                     @foreach (educationLevels() as $item)
                         <option @if($result['degree']['name'] == $item) selected @endif value="{{ $item }}">{{ $item }}</option>
@@ -31,28 +31,36 @@
         <div class="col-md-6 col-sm-12 col-12 pb-2">
             <label for="languages" class="form-label">Percentage scored/CGPA * </label>
             <div class="dropdown-wrapper">
-
-                <select  name="grade" id="grade"
+                <select  name="grade" id="grade_edit"
                     class="form-control form-inputs-parent">
                     <option value="">Select</option>
                     @foreach (getGrade() as $key => $item)
                         <option @if(isset($result['grade'])) @if($result['grade'] == $item) selected @endif @endif value="{{ $item }}">{{ $item }}</option>
                     @endforeach
                 </select>
-
-
             </div>
             <span class="text-danger" id="error-grade"></span>
         </div>
 
+       
+        <div class="col-md-12 col-sm-12 col-12 pb-2">
+            <label for="currently_working" class="form-label">Currently Working</label>
+            <div class="form-check">
+                <input class="form-check-input" {{( isset($result['currently_working']) &&  $result['currently_working'] == 1)?'checked':''}} type="checkbox" name="currently_working" id="edit_currently_working">
+                <label class="form-check-label" for="currently_working">
+                    Yes
+                </label>
+            </div>
+        </div>
+
         <div class="col-md-6 col-sm-12 col-12 pb-2">
             <label for="start_date" class="form-label">Starting period</label>
-            <input type="date" class="form-control form-inputs-parent" value="{{(isset($result['start_date']))? $result['start_date'] :""}}" name="start_date" id="start_date" />
+            <input type="text" class="form-control form-inputs-parent" value="{{(isset($result['start_date']))? date('d/m/Y',strtotime($result['start_date'])) :""}}" name="start_date" id="edit_start_date" />
             <span class="text-danger" id="error-start_date"></span>
         </div>
         <div class="col-md-6 col-sm-12 col-12 pb-2">
             <label for="end_date" class="form-label">Ending period</label>
-            <input type="date" class="form-control form-inputs-parent" value="{{(isset($result['end_date']))? $result['end_date'] :""}}" name="end_date" id="end_date" />
+            <input type="text" class="form-control form-inputs-parent" value="{{(isset($result['end_date']))? date('d/m/Y',strtotime($result['end_date'])) :""}}" name="end_date" id="edit_end_date" />
             <span class="text-danger" id="error-end_date"></span>
         </div>
         <div class="col-md-12 col-sm-12 col-12">

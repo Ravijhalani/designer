@@ -1,6 +1,7 @@
 @extends('frontend.Layouts.main')
 
 @section('content')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @push('css')
         <link rel="stylesheet" href="{{ asset('allAssets/dashboard.css') }}" />
         <link rel="stylesheet" href="{{ asset('allAssets/style.css') }}" />
@@ -130,14 +131,14 @@
                     @include('frontend.dashboard-pages.basicInfo')
                     @include('frontend.dashboard-pages.education')
                     @include('frontend.dashboard-pages.professional')
-                    @include('frontend.dashboard-pages.review')
+                    {{-- @include('frontend.dashboard-pages.review') --}}
 
 
 
 
                     <!-- ----------------tab content form four----------------- -->
                     <div class="tab-pane fade" id="pills-four" role="tabpanel" aria-labelledby="pills-three-tab">
-                        This is Blank!
+
                     </div>
                 </div>
             </div>
@@ -147,8 +148,18 @@
 @push('js')
     <script src="{{ asset('allAssets/index.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
+        var itDesignations = {!!json_encode($designation_list)!!};   
+        autoComplete("#userForm #desigation", itDesignations)
+    </script>
+    <script>
+
+       
+
+
+
+
         $(document).ready(function() {
             function activateTabFromHash() {
                 var hash = window.location.hash;

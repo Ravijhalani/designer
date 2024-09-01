@@ -19,47 +19,57 @@ class AvailablityController extends Controller{
 
     public function index(Request $request){
         
-        $days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
-
-        $client = new Client();
-
-        $data = [];
-
-        $response = $client->get(env('API_URL').'/api/profile_schedule', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . auth()->user()->jwt_token,
-                'Content-Type' => 'application/json',
-            ]
-        ]);
-        
-        $body = json_decode($response->getBody(),TRUE);
-
-        if(isset($body['response'])) {
-            $data = $body['response']['items'];
-        }
-        $slotsForDay = [];
-        // dd($data);
-        // Iterate over the fixed array of days
-        foreach ($days as $day) {
-            // Check if the API response contains slots for this day
-            
-            foreach ($data as $schedule) {
-                foreach ($schedule['schedule_slots'] as $slot) {
-                    if ($slot['day_of_week'] == $day) {
-                        $slotsForDay[$day][] = [
-                            'start_time' => $slot['slot_start_time'],
-                            'end_time' => $slot['slot_end_time'],
-                            'id'=>$schedule['id']
-                        ];
-                    }
-                }
-            }
-        }
-
-        
-       
-        return view('frontend.availablity',compact('days','slotsForDay','data'));
+        $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        $fetch = fetch('GET','/profile_schedule',body([]));
+        $data = $this->groupScheduleSlots($fetch['items']);
+        return view('frontend.availablity',compact('data'));
     }
+
+    public function groupScheduleSlots($data) {
+        $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        
+        foreach ($data as &$schedule) {
+            $groupedSlots = array_fill_keys($daysOfWeek, []);
+            foreach ($schedule['schedule_slots'] as $slot) {
+                $day = $slot['day_of_week'];
+                
+                $groupedSlots[ucwords(strtolower($day))][] = [
+                    'start_time' => $slot['slot_start_time'],
+                    'end_time' => $slot['slot_end_time'],
+                    'id' => $schedule['id']
+                ];
+            }
+            
+            // Replace the original schedule_slots with the grouped slots
+            $schedule['schedules'] = $groupedSlots;
+        }
+        
+        return $data;
+    }
+
+
+        public function groupEditScheduleSlots($data) {
+        $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        
+        
+        $groupedSlots = array_fill_keys($daysOfWeek, []);
+        foreach ($data['schedule_slots'] as $slot) {
+            $day = $slot['day_of_week'];
+            
+            $groupedSlots[ucwords(strtolower($day))][] = [
+                'start_time' => $slot['slot_start_time'],
+                'end_time' => $slot['slot_end_time'],
+                'id' => $data['id']
+            ];
+        }
+        
+        // Replace the original schedule_slots with the grouped slots
+        $data['schedules'] = $groupedSlots;
+    
+        
+        return $data;
+    }
+
 
     public function create(Request $request):View{
         $service = $this->services();
@@ -117,7 +127,7 @@ class AvailablityController extends Controller{
 
         $data = [];
 
-        $response = $client->get(env('API_URL').'/api/profile_service/'.$service_id, [
+        $response = $client->get(env('API_URL').'/profile_service/'.$service_id, [
             'headers' => [
                 'Authorization' => 'Bearer ' . auth()->user()->jwt_token,
                 'Content-Type' => 'application/json',
@@ -142,29 +152,75 @@ class AvailablityController extends Controller{
        return view('frontend.service-add',compact('service_id','service','data'));
     }
 
+   public function convertToUTC($time,$currentTimezone) {
+        // Parse the time with the provided timezone
+        $timeWithTimezone = Carbon::createFromTimeString($time, $currentTimezone);
+        
+        // Convert the time to UTC
+        $utcTime = $timeWithTimezone->setTimezone('UTC');
+        
+        return $utcTime->toTimeString(); // Returns 'HH:mm:ss' format
+    }
+
+    public function formData(Request $request,$id)
+    {      
+        $output=[];
+        $data = fetch('GET','/profile_schedule/'.$id,'');
+        $item = $this->groupEditScheduleSlots($data);
+        $html = view('sections.schedule_form', compact('item'))->render(); // Load a partial view
+        return response()->json($html);
+    }
+
 
     public function store(Request $request,$id){
-        
         $data = $request->except('_token');
+
+        if(!isset($data['start_time'])){
+            return redirect()->back()->withError('Please add a start & end time ');
+        }
+
+        if(!isset($data['end_time'])){
+            return redirect()->back()->withError('Please add a start & end time ');
+        }
+
+        $timeZone = $request->timeZone[$id];
+        
+
         $data['start_time'] = array_filter($data['start_time']);
         $data['end_time'] = array_filter($data['end_time']);
         
         // Construct the final output object
         $output = [
-            "schedule_slots" => []
+            "schedule_slots" => [],
+            // "schedule_name"  => $request->schedule_name[$id],
+            "is_primary"=>(isset($request->is_primary[$id]))?true:false,
+            "time_zone"=>$timeZone
         ];
 
         // Construct schedule slots
-        foreach ($data["days"] as $day) {
+        $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        
+        $validationTimeZone = false;
+
+        foreach ($days as $day) {
             if (isset($data["start_time"][$day]) && isset($data["end_time"][$day])) {
                 foreach ($data["start_time"][$day] as $index => $startTime) {
                     // Only add entries with non-null start_time and end_time
                     if ($startTime !== null && isset($data["end_time"][$day][$index]) && $data["end_time"][$day][$index] !== null) {
+
+                        $convertedStartTime = $this->convertToUTC($startTime,$timeZone);
+                        $convertedEndTime = $this->convertToUTC($data["end_time"][$day][$index],$timeZone);
+
+                        if(strtotime($convertedStartTime) < strtotime($convertedEndTime)){
+                            $validationTimeZone = true;
+                            break;
+                        }
+
                         $output["schedule_slots"][] = [
-                            "day_of_week" => $day,
+                            "day_of_week" => strtoupper($day),
                             "time_range" => [
-                                "start_time" => $startTime,
-                                "end_time" => $data["end_time"][$day][$index]
+                                "start_time" => $convertedStartTime,
+                                "end_time" => $convertedEndTime
                             ]
                         ];
                     }
@@ -174,29 +230,15 @@ class AvailablityController extends Controller{
 
        try{
         DB::beginTransaction();
-        // $client = new Client();
-        
-        // dd(body($output));
-        $fetch = fetch('PATCH','/api/profile_schedule/'.$id,body($output));
+       
+        if($validationTimeZone){
+            return response()->json(['status'=>false,'message'=>'Availablity time issue with timezone']);
+        }
 
-        // $response = $client->patch(env('API_URL').'/api/profile_schedule', [
-        //     'headers' => [
-        //         'Authorization' => 'Bearer ' . auth()->user()->jwt_token,
-        //         'Content-Type' => 'application/json',
-        //     ],
-        //     'json' => $output,
-        // ]);
+       $fetch = fetch('PATCH','/profile_schedule/'.$id,body($output));
 
-        // $body = json_decode($response->getBody());
-            // dd($fetch);
-
-
-        // if(isset($body->response)){
-        //     DB::commit();
-        //     return response()->json(['status'=>true,'message'=>'Availablity added successfully']);
-        // }
-
-        return redirect()->back()->withSuccess('Availablity update successfully');
+        return response()->json(['status'=>true,'message'=>'Availablity update successfully','data'=>$fetch]);
+        //return redirect()->back()->withSuccess('Availablity update successfully');
        }
        catch(\Exception $e){
         DB::rollback();
@@ -250,7 +292,7 @@ class AvailablityController extends Controller{
             DB::beginTransaction();
             $client = new Client();
     
-            $response = $client->patch(env('API_URL').'/api/profile_service/'.$service_id, [
+            $response = $client->patch(env('API_URL').'/profile_service/'.$service_id, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . auth()->user()->jwt_token,
                     'Content-Type' => 'application/json',
@@ -284,8 +326,6 @@ class AvailablityController extends Controller{
     public function saveSchedules(Request $request){
 
         try{
-            DB::beginTransaction();
-            // $client = new Client();
 
             $output = [
                 "schedule_name" => $request->schedule_name,
@@ -293,28 +333,18 @@ class AvailablityController extends Controller{
                 "schedule_slots" => []
             ];
     
-            // $response = $client->post(env('API_URL').'/api/profile_schedule', [
-            //     'headers' => [
-            //         'Authorization' => 'Bearer ' . auth()->user()->jwt_token,
-            //         'Content-Type' => 'application/json',
-            //     ],
-            //     'json' => $output,
-            // ]);
-    
-            // $body = json_decode($response->getBody());
+            $schedule_name = fetch('POST','/profile_schedule',body($output));
+          
+            if(isset($schedule_name['schedule_name'])){
+               return redirect()->back()->withSuccess('Schedule added successfully');
+            }
 
-
-            // dd(body($output));
-            $schools = fetch('POST','/api/profile_schedule',body($output));
-
-           
-            if(isset($body->response)){
-                DB::commit();
-                return response()->json(['status'=>true,'message'=>'Schedule added successfully']);
+            if(isset($schedule_name['response_body'])){
+               return redirect()->back()->withError($schedule_name['response_body']);
             }
            }
            catch(\Exception $e){
-            DB::rollback();
+
             return response()->json(['status'=>false,'message'=>$e->getMessage()]);
            }
            
@@ -327,7 +357,7 @@ class AvailablityController extends Controller{
 
         $days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
         $data = [];
-        $schedulesData = fetch('GET','/api/profile_schedule',body(['name'=>'','page'=>1,'limit'=>10]));
+        $schedulesData = fetch('GET','/profile_schedule',body(['name'=>'','page'=>1,'limit'=>10]));
         $slotsForDay = [];
         // Iterate over the fixed array of days
         foreach ($days as $day) {
@@ -347,7 +377,7 @@ class AvailablityController extends Controller{
         }
 
 
-        $schedulesData = fetch('GET','/api/profile_schedule/'.$schedule_id,body(['name'=>'','page'=>1,'limit'=>10]));
+        $schedulesData = fetch('GET','/profile_schedule/'.$schedule_id,body(['name'=>'','page'=>1,'limit'=>10]));
         $html = view('frontend.availablity-forms',compact('schedulesData','schedule_id','slotsForDay','days'))->render();
         return response()->json($html);
     }

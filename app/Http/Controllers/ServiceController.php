@@ -42,12 +42,24 @@ class ServiceController extends Controller{
         return view('frontend.service',compact('data','service'));
     }
 
+    public function indexAjax(Request $request){
+        
+        $data = fetch('GET','/profile_service?service_category='.$request->service_category,body([]));
+        if(isset($data['response_body'])){
+            return response()->json(['status'=>false,'message'=>$data['response_body']]);
+        }
+        
+        $data = $data['items'];
+        $view    = view('service-data',compact('data'))->render();
+        return response()->json(['status'=>true,'data'=>$view,'message'=>'']);
+    }
+
     public function create(Request $request):View{
         $service = $this->services();
         $company = fetch('POST','/profile/company_list',body(['name'=>'','page'=>1,'limit'=>10]));
         $company = json_encode(collect($company['items'])->pluck('name')->toArray());
-
-        return view('frontend.service-add',compact('service','company'));        
+        $scheduling = fetch('GET','/profile_schedule',body(['name'=>'','page'=>1,'limit'=>10]));   
+        return view('frontend.service-add',compact('service','company','scheduling'));        
     }
     
     public function services(){
@@ -94,51 +106,37 @@ class ServiceController extends Controller{
     public function edit(Request $request,$service_id): View{
         $service = $this->services();
 
-        $client = new Client();
+        $serviceData = fetch('GET','/profile_service/'.$service_id,body([]));        
 
-        $data = [];
-
-        $response = $client->get(env('API_URL').'/profile_service/'.$service_id, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . auth()->user()->jwt_token,
-                'Content-Type' => 'application/json',
-            ]
-        ]);
-        
-        $body = json_decode($response->getBody(),TRUE);
-
-        if(isset($body['response'])) {
-            $data = $body['response'];
-
-            // Extracting the 'name' field from the nested array using array_map
-            $skillNames = array_map(function($data) {
-                return $data['skill']['name'];
-            }, $data['skills']);
-
-      
-            $data['skills'] = implode(',',$skillNames);
-
+        if(isset($serviceData)) {
+                // Extracting the 'name' field from the nested array using array_map
+                $skillNames = array_map(function($serviceData) {
+                    return $serviceData['skill']['name'];
+                }, $serviceData['skills']);
+                $serviceData['skills'] = implode(',',$skillNames);
         }
-      
-       return view('frontend.service-add',compact('service_id','service','data'));
+
+        $company = fetch('POST','/profile/company_list',body(['name'=>'','page'=>1,'limit'=>10]));
+        $company = json_encode(collect($company['items'])->pluck('name')->toArray());
+        
+        
+        $scheduling = fetch('GET','/profile_schedule',body(['name'=>'','page'=>1,'limit'=>10]));      
+        // dd($serviceData['schedule']);
+       return view('frontend.service-add',compact('scheduling','company','service_id','service','serviceData'));
     }
 
 
     public function store(Request $request){
 
-<<<<<<< Updated upstream
        try {
-=======
-        $data = $request->except('_token');
-        $data['email'] = auth()->user()->email;
-        $data['schedule_id'] = 1;
-        if(isset($data['skills'])) {
->>>>>>> Stashed changes
 
             \DB::beginTransaction();
 
             $skills = [];
-
+            $data = $request->except('_token');
+            $data['email'] = auth()->user()->email;
+            $data['schedule_id'] = 1;
+           
             if(isset($data['skills'])) {
 
                 $jsonString = $data['skills'];
@@ -163,7 +161,7 @@ class ServiceController extends Controller{
                     "designation_name"=>$request->designation_name,
                     "skills"=>$skills,
                     "email"=>auth()->user()->email,
-                    "schedule_id"=>1
+                    "schedule_id"=>$request->schedule_id
                 ];
 
             fetch('POST', '/profile_service', body($services));
@@ -185,7 +183,7 @@ class ServiceController extends Controller{
     public function update(Request $request,$service_id){
 
         // dd($request->all());
-        $exceptArray = ['_token','skills'];
+        $exceptArray = ['_token'];
 
         switch ($request->service_category) {
             case 'TECH_EXPERT':
@@ -204,7 +202,7 @@ class ServiceController extends Controller{
 
         $data = $request->except($exceptArray);
         $data['email'] = auth()->user()->email;
-        $data['schedule_id'] = 6;
+        $data['schedule_id'] = $request->schedule_id;
         if(isset($data['skills'])) {
 
             $jsonString = $data['skills'];
@@ -218,7 +216,7 @@ class ServiceController extends Controller{
         }
 
         $structure = ["data" => $data];
-        //  dd($structure);
+        //   dd($structure);
         try{
             DB::beginTransaction();
             $client = new Client();
@@ -242,8 +240,6 @@ class ServiceController extends Controller{
             DB::rollback();
             return response()->json(['status'=>false,'message'=>$e->getMessage()]);
            }
-
-       dd($request->all());
     }
 
     /**

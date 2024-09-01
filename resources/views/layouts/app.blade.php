@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOBES- Job Portal HTML Template</title>
-    <link rel="icon" href="{{asset('assets/images/sm-logo.svg')}}" type="image/gif" sizes="20x20">
+    <title>Youask- Get Skills Before Degree</title>
+    <link rel="icon" href="{{asset('assets/youAsk.png')}}" type="image/gif" sizes="20x20">
 
     <link rel="stylesheet" href="{{asset('assets/css/all.css')}}">
 
@@ -412,5 +412,6 @@
 </body>
 
 @stack('js')
+
 
 </html>

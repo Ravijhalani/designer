@@ -76,5 +76,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin' => \App\Http\Middleware\admin::class,
         'user' => \App\Http\Middleware\user::class,
+        'jwt.check_expiration' => \App\Http\Middleware\CheckJWTExpiration::class,
     ];
 }

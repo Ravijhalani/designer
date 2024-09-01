@@ -68,34 +68,7 @@
 
 <body>
     
-    <div class="container-fluid" style="    background: #00a7ac;">
-        <div class="row no-gutter">
-            <!-- The image half -->
-            <div class="col-md-6 d-none d-md-flex bg-image" style="max-height: 105vh;"></div>
-    
-    
-            <!-- The content half -->
-            <div class="col-md-6 bg-white" style="max-height: 105vh;">
-                <div class="login d-flex align-items-center">
-    
-                    <!-- Demo content-->
-
-                    
-
-                    <div class=" form-wrapper p-0">
-                        <div class="col-lg-12 d-flex  pt-3 pb-4">
-                            <div class="explore-btn">
-                                <a style="color: #00A7AC" href="{{route('home')}}"><span><img src="{{asset('assets/images/icon/icons8-arrow-left-50.png')}}" alt=""></span> Back to home </a>
-                            </div>
-                        </div>
-                        @yield('content')
-                    </div>
-    
-                </div>
-            </div><!-- End -->
-    
-        </div>
-    </div>    
+@yield('content')   
 </body>
 </html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

@@ -22,7 +22,7 @@
         class="user d-flex flex-row align-items-center justify-content-center gap-2"
       >
         <div class="img"></div>
-        <span class="name">Rajesh Sharma</span>
+        <span class="name">{{ ucfirst(auth()->user()->first_name) ?? 'User' . ucfirst(auth()->user()->last_name)?? ' ' }}</span>
         <!-- <i class="uil uil-search caret"></i> -->
       </div>
     </div>

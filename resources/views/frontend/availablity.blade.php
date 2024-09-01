@@ -1,436 +1,529 @@
-@extends('frontend.layout.header')
+@extends('frontend.Layouts.main')
 
 @push('css')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.18.0/tagify.css"
-        integrity="sha512-SNbSEpyK7jz5R7yjTrilJOlK4sgtHMfZoNtERAd8VF6jj6fk0LdW4HT3RwOLYhZmKn4GRtsNCZfA8lJ/FmYfhw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="{{ asset('availablities/styles.css') }}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pickr/dist/themes/nano.min.css">
+
     <style>
-        .action-btn.loading {
-            color: transparent;
-        }
-
-        .action-btn.loading::after {
-            opacity: 1;
-        }
-
-        .error,
-        .errors,
-        .required {
-            color: red !important;
-        }
-
-        .tagify__dropdown {
-            z-index: 9999 !important;
+        .custom-time-input {
+            cursor: pointer;
+            width: 200px;
+            height: 40px;
+            padding: 10px;
+            font-size: 16px;
         }
     </style>
-
-    @include('frontend.custom-assets.service.tabs-css')
 @endpush
 
 @section('content')
-
-
-
-@section('content')
-    <div class="dashboard-area pt-120 mb-120">
-        <div class="container">
-            <div class="row g-lg-4 gy-5 mb-90">
-                <div class="col-lg-3">
-                    <div class="dashboard-sidebar">
-                        @include('frontend.dashboard-slider')
+    <!---------------------content starts from here------------------>
+    <div class="w-100 d-flex justify-content-center align-items-center">
+        <div class="m-4 over-flow-class-all">
+            <div class="bg-white p-3">
+                <div class="top-head">
+                    <div class="mt-2 d-flex justify-content-start align-items-center">
+                        <i class="uil uil-angle-left fs-4 m-0 p-0"></i>
+                        <p class="fs-5 fw-bold m-0">Availability</p>
                     </div>
+                    <hr class="mt-3" />
+
+                    @if (session()->has('success'))
+                        <div class="alert alert-success">
+                            {{ session()->get('success') }}
+                        </div>
+                    @endif
+
+                    @if (session()->has('error'))
+                        <div class="alert alert-danger">
+                            {{ session()->get('error') }}
+                        </div>
+                    @endif
+
                 </div>
-                <div class="col-lg-9 card">
-                   
-                    <div class="meeting-availability-area ">
-                        <div class="container">
-                            <!-- Meeting Availability Top Section  Start -->
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-12 over-flow-class-all-panel">
+                        <!-- tabs for form here  -->
+                        <ul class="nav nav-pills mb-3 d-flex flex-column" id="pills-tab" role="tablist">
+                            <!-- ----------------tab four ---------------- -->
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link w-100 tab-parent-inner m-0 py-0 disabled" id="pills-three-tab"
+                                    data-bs-toggle="pill" data-bs-target="#pills-four" type="button" role="tab"
+                                    aria-controls="pills-four" aria-selected="false" onclick="activateTab(this)">
+                                    <div class="text-start background-color-active">
+                                        <p class="m-0 background-color-active-text">Schedule</p>
+                                    </div>
+                                </button>
+                            </li>
+                            @php
+                                $isPrimary = false;
+                            @endphp
+                            <!-- ----------tab one----------- -->
+                            @foreach ($data as $key => $item)
+                                <li class="nav-item" role="presentation">
+                                    <button data-schedule-id="{{ $item['id'] }}"
+                                        class="nav-link  w-100 tab-parent-inner {{ $key == 0 ? 'active' : '' }} m-0 py-0"
+                                        id="pills-one-tab{{ $item['id'] }}" data-bs-toggle="pill"
+                                        data-bs-target="#pills-one{{ $item['id'] }}" type="button" role="tab"
+                                        aria-controls="pills-one{{ $item['id'] }}" aria-selected="true"
+                                        onclick="activateTab(this)">
+                                        <div class="text-start background-color-on-active">
+                                            @if ($item['is_primary'])
+                                                <p class="default-value">Default</p>
+                                            @endif
+                                            <p class="m-0 background-color-on-active-text ">
+                                                {{ $item['schedule_name'] }}
+                                            </p>
+                                        </div>
+                                    </button>
+                                </li>
+                            @endforeach
 
-                           
 
-                            <div class="availability-title-section ma-row">
-                                <div class="header-section">
-                                    
-                                    @if(Session::has('success'))
-                                        <div class="alert alert-success">{{Session::get('success')}}</div>
-                                    @endif
-
-                                    <h4 class="layout-header">
-                                        <div class="">Availability</div>
-                                    </h4>
-                                </div>
+                            <div class="text-start add-more-button-parent">
+                                <a href="javascript:void(0)" data-toggle="modal" data-target="#scheduleModal"
+                                    class="m-0 px-3 background-color-active-text text-decoration-none">Add more
+                                    +</a>
                             </div>
-                            <!-- Meeting Availability Top Section end -->
-
-                            <!-- Meeting Availability Main Section  Start -->
-                            
-                                <div class=" availability-main">
-                                    <div class="availability-main-inner">
-                                        <div class="ma-row availability-tabs">
-                                            <div class="availability-tabs-inner">
-                                                <div class="ma-row availability-tabs-s1">
-                                                    <div class="schedule-menu">
-                                                        <div class="m-a-typography tabs-availability">
-                                                            <div class="tabs-availability-inner">
-                                                            
-                                                                @foreach ($data as $item)
-                                                                    <div class="m-a-item schedule_div">
-                                                                        <a onclick="getScheduleForms(this)" data-url="{{route('schedules.forms',['schedule_id'=>$item['id']])}}" href="javascript:void(0)"
-                                                                            class="schedulesForm p-2 btn btn-sm {{ ($item['is_primary']) ?'btn-dark' : 'btn-outline-dark' }}">
-                                                                            <span>{{ $item['schedule_name'] }}</span>
-                                                                        </a>
-                                                                    </div>
-                                                                @endforeach
+                        </ul>
+                    </div>
 
 
-                                                                <div class="m-a-item">
-                                                                    <button data-bs-toggle="modal"
-                                                                        data-bs-target="#exampleModal" type="button"
-                                                                        class="btn-new-schedule serviceScheduleRef">
-                                                                        <span>+ New Schedule</span>
-                                                                    </button>
-                                                                </div>
+
+                    <div class="col-lg-8 col-md-12 col-sm-12 col-12 pe-4 over-flow-class-all-panel">
+
+
+                        <div id="loader" style="display:none;">
+                            <center>
+                                <img src="https://res.cloudinary.com/bytesizedpieces/image/upload/v1656085547/article/a-how-to-guide-on-making-an-animated-loading-image-for-a-website/animated_loader_hghpbl.gif"
+                                    alt="Loading...">
+                            </center>
+
+                        </div>
+
+                        <div class="tab-content" id="pills-tabContent">
+
+
+
+                            <!-- ----------------tab content form one----------------- -->
+                            {{-- @foreach ($data as $key => $item)
+                            <div class="tab-pane fade {{ $item['is_primary'] ? 'show' : '' }} {{ $item['is_primary'] ? 'active' : '' }}"
+                                id="pills-one{{ $item['id'] }}" role="tabpanel"
+                                aria-labelledby="pills-one-tab{{ $item['id'] }}">
+
+                                <form onsubmit="setValidation(this)" id="form{{ $item['id'] }}" method="POST"
+                                    action="{{ route('availablity.store', ['schedule_id' => $item['id']]) }}">
+                                    @csrf
+
+                                    <input type="hidden" id="timeZone{{ $item['id'] }}" name="timeZone[{{ $item['id'] }}]" value="">
+                                    <script>
+                                        var userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                                            $("#timeZone{{ $item['id'] }}").val(userTimezone);
+
+
+                                    </script>
+
+                                    
+
+                                    <div class="text-start background-color-active">
+                                        <p class="m-0 background-color-active-text">Days</p>
+
+                                        <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+                                            <p class="switch-text m-0">Set as primary</p>
+
+                                            <label class="switch">
+                                                <input type="checkbox" name="is_primary[{{ $item['id'] }}]"
+                                                    @if ($item['is_primary']) checked @endif value="1" />
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- content should here  -->
+                                    <div class="accordion" id="accordionExample">
+
+                                        <div class="form-group p-2">
+                                            <label for=""> <strong> Schedule Name : </strong> </label>
+                                            <input type="text" value="{{ $item['schedule_name'] }}" class="form-control"
+                                                name="schedule_name[{{ $item['id'] }}]"
+                                                id="schedule_name{{ $item['id'] }}">
+                                        </div>
+
+                                        @foreach ($item['schedules'] as $days => $schedules)
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingOne">
+                                                    <button
+                                                        style="{{ $days == 'Monday' ? 'color:#0c63e4!important' : 'color:black!important' }}"
+                                                        class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                        data-bs-target="#collapseOne{{ $item['id'] }}{{ $days }}"
+                                                        aria-expanded="true"
+                                                        aria-controls="collapseOne{{ $item['id'] }}{{ $days }}">
+                                                        {{ $days }}
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseOne{{ $item['id'] }}{{ $days }}"
+                                                    class="accordion-collapse collapse {{ $days == 'Monday' ? 'show' : '' }} "
+                                                    aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body p-0">
+                                                        <div class="accordion-body">
+                                                            <div id="schedules{{ $days }}{{ $item['id'] }}"
+                                                                class="schedulesParent">
+                                                                @if (count($schedules) > 0)
+                                                                    @foreach ($schedules as $key => $time)
+                                                                        @php
+                                                                            $rand = rand(1000, 10000);
+                                                                        @endphp
+
+                                                                        <div class="row px-2 pb-3"
+                                                                            id="schedulesROW{{ $days }}{{ $rand }}">
+                                                                            <div
+                                                                                class="col-md-4 p-0 d-flex justify-content-center align-items-center">
+                                                                                <div class="input-group">
+                                                                                    <input type="time"
+                                                                                        class="custom-time-input timepicker form-control form-inputs-parent"
+                                                                                        id="startTime{{ $days }}{{ $rand }}"
+                                                                                        name="start_time[{{ $days }}][]"
+                                                                                        placeholder="HH : MM" required
+                                                                                        value="{{ $time['start_time'] }}"
+                                                                                        onblur="checkTime('{{ $days }}', '{{ $item['id'] }}', '{{ $rand }}')" />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div
+                                                                                class="col-md-1 p-0 text-center d-flex justify-content-center align-items-center">
+                                                                                <p class="center-text m-0"> <strong>To</strong> </p>
+                                                                            </div>
+                                                                            <div
+                                                                                class="col-md-4 p-0 d-flex justify-content-center align-items-center">
+                                                                                <div class="input-group">
+                                                                                    <input type="time"
+                                                                                        class="custom-time-input timepicker form-control form-inputs-parent"
+                                                                                        id="endTime{{ $days }}{{ $rand }}"
+                                                                                        name="end_time[{{ $days }}][]"
+                                                                                        placeholder="HH : MM" required
+                                                                                        value="{{ $time['end_time'] }}"
+                                                                                        onblur="checkTime('{{ $days }}', '{{ $item['id'] }}', '{{ $rand }}')" />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div
+                                                                                class="col-md-2 d-flex flex-row gap-4 flex-wrap justify-content-center align-items-center">
+                                                                                <i onclick="removeThis('{{ $days }}', '{{ $rand }}')"
+                                                                                    class="uil uil-multiply text-danger fs-5 icons-work"></i>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endforeach
+                                                                @endif
+                                                            </div>
+                                                            <div class="text-start p-1 add-more-button-parent">
+                                                                <a onclick="addMoreSchedules('{{ $days }}', '{{ $item['id'] }}')"
+                                                                    href="javascript:void(0)"
+                                                                    class="m-0 background-color-active-text text-decoration-none">Add
+                                                                    more +</a>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <div id="scheduleData">
-                                                    
-                                                </div>
-                                                
                                             </div>
-                                        </div>
+
+                                           
+                                        @endforeach
+
                                     </div>
-                                </div>
-                                <!-- Meeting Availability Main Section  End -->
+
+                                    <div class=" p-4" style="    text-align: right;">
+                                     <button type="submit" class="btn float-right btn-outline-success"> <i   class="fa fa-plus"></i> Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endforeach --}}
+
+
+
+
                         </div>
+
+
+
                     </div>
+
 
                 </div>
             </div>
         </div>
-    </div>
 
 
-    <!-- Button trigger modal -->
-    <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="scheduleModal" tabindex="-1" role="dialog" aria-labelledby="scheduleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog  modal-dialog-centered" role="document">
 
-        <div class="modal-dialog modal-lg">
-            
                 <div class="modal-content">
-                    <form id="saveSchedules" action="{{ route('save.schedules') }}" method="POST">
+                    <form action="{{ route('save.schedules') }}" method="post">
                         @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add New Schedule</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="schedule_name" class="col-form-label">Schedule Name:</label>
-                            <input type="text" class="form-control" id="schedule_name" name="schedule_name">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="scheduleModalLabel"><strong> Add Schedule </strong></h5>
+                            <button type="button" class="btn btn-danger close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
+                        <div class="modal-body">
+                            <div class="form-group">
 
-                        <div class="mb-3">
-                            <label for="is_primary" class="col-form-label">Is Default:</label>
-                            <input type="checkbox" id="is_primary" name="is_primary">
+                                <label for=""> <strong> Schedule Name : </strong></label>
+                                <input type="text" name="schedule_name" id="schedule_name" required
+                                    class="form-control" />
+                            </div>
+
+                            <div class=" pt-3 " style="display: grid">
+                                <strong class=" m-0">Set as primary </strong>
+                                <label class="switch">
+                                    <input type="checkbox" name="is_primary" value="1" />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
                         </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Save changes <i class="fa fa-save"></i> </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
-
-                        <button type="submit" class="btn-sm btn btn-primary">Save Schedule</button>
-                        <button type="button" class="btn-sm btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-                    </div>
-                    
-                </form>
-
+                        </div>
+                    </form>
                 </div>
+
+            </div>
         </div>
-
     </div>
-
 @endsection
 
 @push('js')
-    <script>
+    <script src="{{ asset('availablities/index.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js"
+        integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-        function getScheduleForms(formObj){
-            
+    <script>
+        // Function to load tab content via AJAX
+        function loadTabContent(scheduleId) {
+            $('#loader').show(); // Show loader
+
             $.ajax({
-                url: $(formObj).attr('data-url'),
+                url: `/availablity/form/${scheduleId}`, // Adjust route to your needs
                 type: 'GET',
-                beforeSend: function() {
-
+                success: function(data) {
+                    $('#pills-tabContent').html(
+                        data); // Load the HTML content into the tabContent div
+                    $('#loader').hide(); // Hide loader once the content is loaded
                 },
-                success: function(data){
-                    $("#scheduleData").html(data);
-                }
-
-            }).done(function (data) {
-                $('#submitBtn').removeClass('loading');
-            });
-
-        }
-
-
-        $(document).on("click", '.serviceScheduleRef', function() {
-
-            $("#schedule_name").val('');
-
-
-            var existingNames = $('.schedule_div button span').map(function() {
-                return $(this).text().trim();
-            }).get();
-            $(".error").remove();
-            $('.saveSchedule').off('click').on('click', function() {
-                var scheduleName = $('#schedule_name').val().trim();
-                if (existingNames.includes(scheduleName)) {
-                    $("#schedule_name").parent('div').append(
-                        `<p class="error">schedule name already exists</p>`)
-                } else {
-                    $(".schedule_div").append(
-                        `<button type="button" class="schedulebtn"><span>${$("#schedule_name").val()}</span></button>`
-                    );
-                    $("#schedule_names").val($("#schedule_name").val());
-                    // Proceed with saving the schedule or whatever you want to do
-                    // For now, let's just close the modal
-                    $('#exampleModal').modal('hide');
+                error: function(xhr, status, error) {
+                    console.error('Error loading tab content:', error);
+                    $('#loader').hide(); // Hide loader on error
                 }
             });
-
-
-            $("#exampleModal").modal("hide");
-        })
-
-      
-           
-       
-    </script>
-
-    <script>
-
-
-
-
-
-
-
-
-
-        $('#availablityForm').validate({
-            rules: {
-                // schedule_names:{
-                //     required:true
-                // }
-            },
-            messages: {
-
-            },
-            errorPlacement: function(error, element) {
-                //alert("Please add atleast one schedule");
-                //$(element).parent('div').parent('div').append(error);
-            },
-            submitHandler: function(form) {
-                event.preventDefault();
-                removeErrors();
-                console.log("form", form.action);
-
-                if ($("#schedule_names").val() == "") {
-                    alert("Please add atleast one schedule");
-                    return false;
-                }
-
-                submitAjax(form, ServiceCreatesuccessMethod)
-            }
-        });
-
-
-        $('#saveSchedules').validate({
-            rules: {
-                schedule_name:{
-                    required:true
-                }
-            },
-            messages: {
-
-            },
-            errorPlacement: function(error, element) {
-                //alert("Please add atleast one schedule");
-                $(element).parent('div').append(error);
-            },
-            submitHandler: function(form) {
-                event.preventDefault();
-                removeErrors();
-                submitAjax(form, ServiceCreatesuccessMethod)
-            }
-        });
-
-
-        
-
-
-        function ServiceCreatesuccessMethod(data) {
-            // alert(data.message);
-            popupMsg('Success', data.message, 'success');
         }
 
+        // On tab click, load content dynamically
+        $('.nav-link').on('click', function(e) {
+            e.preventDefault();
+            $("#pills-tabContent").html('');
+            var scheduleId = $(this).attr(
+                'data-schedule-id'); // Assuming you pass the ID via data attribute
+            loadTabContent(scheduleId);
+        });
+
+        var firstButton = $('li.nav-item button[data-schedule-id]').first();
 
 
-    $(document).on('change', ".m-a-checkbox-input", function() {
-        var parentRow = $(this).closest(".slot-item");
-        var dayTimeDiv = parentRow.find(".day-time");
-        var dayTimeDivMain = parentRow.find(".day-time-main");
-        var unavailableDiv = parentRow.find(".day-t-unavailable");
-
-        if ($(this).prop("checked")) {
-            dayTimeDiv.removeClass("d-none");
-            dayTimeDivMain.removeClass("d-none");
-            unavailableDiv.addClass("d-none");
+        if (firstButton.length > 0) {
+            var firstScheduleId = firstButton.data('schedule-id');
+            loadTabContent(firstScheduleId);
         } else {
-            dayTimeDiv.addClass("d-none");
-            dayTimeDivMain.addClass("d-none");
-            unavailableDiv.removeClass("d-none");
+            console.log('Button not found or missing data-schedule-id.');
         }
-    });
 
-    // $(document).on('blur', ".day-time", function() {
-    //     let inputs = $(this).find(".day-time-inner input[type='time']");
-    //     let input1 = timeToSeconds(inputs[0].value);
-    //     let input2 = timeToSeconds(inputs[1].value);
-    //     var dayOfWeek =  $(this).closest('.slot-item').find('.day-of-week').text();
-    //     var $rows = $('.day-time').find('.day-time-inner').filter(function() {
-    //                     return $(this).closest('.slot-item').find('.day-of-week').text() === dayOfWeek;
-    //                 });
-    //                 // .not($(this)).filter(function() {
-    //                 //     return $(this).closest('.slot-item').find('.day-of-week').text() === dayOfWeek;
-    //                 // });
 
-    //     console.log("$rows",$rows);
-    //     if (input1 === input2) {
-    //         alert("Start time and end time cannot be equal");
-    //         resetInputValues(inputs);
-    //         return false;
-    //     }
 
-    //     if (input2 < input1) {
-    //         alert("End time cannot be smaller than start time");
-    //         resetInputValues(inputs);
-    //         return false;
-    //     }
 
-    //     $rows.each(function() {
-    //         var start_time = timeToSeconds($(this).find('input[name="start_time[' + dayOfWeek + '][]"]')
-    //             .val());
-    //         var end_time = timeToSeconds($(this).find('input[name="end_time[' + dayOfWeek + '][]"]')
-    //             .val());
 
-    //         if (start_time === input1) {
-    //             alert("Start time cannot be equal");
-    //             resetInputValues(inputs);
-    //             return false;
-    //         }
 
-    //         if (input1 < end_time && input2 > start_time) {
-    //             alert("Your current slot overlapped to below these slots");
-    //             resetInputValues(inputs);
-    //             return false;
-    //         }
-    //     });
-    // });
+        // Initialize the form validation for dynamically loaded forms
+        $(document).on('submit', '#availablityForm', function(e) {
+            e.preventDefault(); // Prevent the default form submission
 
-    // function setValidation(thisObj){
+            var $form = $(this); // Get the form element
+            var $submitButton = $form.find('button[type="submit"]'); // Get the submit button
+            var loaderIcon =
+                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
-    //   var $rows =   $(thisObj).closest('.slot-item').find('.day-time-inner').not( $(thisObj) )
-    //   var dayOfWeek =  $(thisObj).closest('.slot-item').find('.day-of-week').text();
-    //   var input1 = $(thisObj).find('input[name="start_time[' + dayOfWeek + '][]"]').val();
-    //   var input2 = $(thisObj).find('input[name="end_time[' + dayOfWeek + '][]"]').val();
+            // Validate the form
+            $form.validate({
+                rules: {
+                    // Add validation rules as per the form input names
+                    // 'start_time[]': {
+                    //     required: true,
+                    // },
+                    // 'end_time[]': {
+                    //     required: true,
+                    // }
+                },
+                messages: {
+                    'start_time[]': "Start time is required",
+                    'end_time[]': "End time is required",
+                },
+                submitHandler: function() {
 
-    //     console.log({"input1":input1,"input2":input2,"dayOfWeek":dayOfWeek,"$rows":$rows});
-    //     if($rows.length > 0){
+                    if ($(".accordion-body .row").length == 0) {
 
-    //              $rows.each(function() {
+                        errorMsg('Validation error',
+                            'Please add atleast 1 start & end time', 'error');
+                        return false;
 
-    //                 // console.log($(this).find('input[name="start_time[' + dayOfWeek + '][]"]').val())
-    //                 var start_time = timeToSeconds($(this).find('input[name="start_time[' + dayOfWeek + '][]"]').val());
-    //                 var end_time = timeToSeconds($(this).find('input[name="end_time[' + dayOfWeek + '][]"]').val());
 
-    //                 if (start_time === input1) {
-    //                     alert("Start time cannot be equal");
-    //                     resetInputValues(inputs);
-    //                     return false;
-    //                 }
+                    }
 
-    //                 if (input1 < end_time && input2 > start_time) {
-    //                     alert("Your current slot overlapped to below these slots");
-    //                     resetInputValues(inputs);
-    //                     return false;
-    //                 }
-    //             });
-            
 
-    //     }
+                    // Add loader icon and disable submit button to prevent double-clicks
+                    $submitButton.prop('disabled', true).html(loaderIcon + ' Saving...');
 
-    // }
+                    // Perform AJAX submission
+                    $.ajax({
+                        url: $form.attr('action'), // Form action URL
+                        type: $form.attr('method'), // Form method (POST)
+                        processData: false, // Important!
+                        contentType: false,
+                        cache: false,
+                        data: new FormData($('#' + $form.attr('id'))[0]),
+                        success: function(response) {
+                            // Handle success (e.g., show success message, reload content, etc.)
+                            if (response.status) {
+                                errorMsg('Success', response.message,
+                                    'success');
+                            } else {
+                                errorMsg('Error', response.message, 'error');
+                            }
 
-    function resetInputValues(inputs) {
-        inputs[0].value = "";
-        inputs[1].value = "";
-    }
-
-    $(document).on('click', ".add-new-time-m", function() {
-        var parentElement = $(this).closest(".day-time-inner");
-        var clone = parentElement.clone();
-        clone.find('input').val('')
-
-        parentElement.parent().append(clone);
-        deleteitem();
-    });
-
-    function deleteitem() {
-        $(".day-time-delete").on("click", function() {
-            var parentElement = $(this).closest(".day-time");
-            if (parentElement) {
-                parentElement.remove();
-            } else {
-                console.log("Parent element not found");
-            }
+                        },
+                        error: function(xhr) {
+                            // Handle error (e.g., show error message)
+                            alert('An error occurred during form submission.');
+                        },
+                        complete: function() {
+                            // Remove the loader icon and enable the button again
+                            $submitButton.prop('disabled', false).html(
+                                '<i class="fa fa-plus"></i> Save');
+                        }
+                    });
+                }
+            });
         });
-    }
 
 
-        function timeToSeconds(timeString) {
-            const [minutes, seconds] = timeString.split(":");
-            return parseInt(minutes) * 60 + parseInt(seconds);
+
+
+
+
+
+
+        function checkTime(days, itemId, rand) {
+            const schedulesParent = document.getElementById(`schedules${days}${itemId}`);
+            const rows = schedulesParent.getElementsByClassName('row');
+
+            // Convert time to minutes for easier comparison
+            function timeToMinutes(time) {
+                const [hours, minutes] = time.split(':').map(Number);
+                return hours * 60 + minutes;
+            }
+
+            const currentRow = document.getElementById(`schedulesROW${days}${rand}`);
+            const currentStartTime = currentRow.querySelector(`#startTime${days}${rand}`).value;
+            const currentEndTime = currentRow.querySelector(`#endTime${days}${rand}`).value;
+
+
+
+            if (!currentStartTime || !currentEndTime) return;
+
+            const currentStart = timeToMinutes(currentStartTime);
+            const currentEnd = timeToMinutes(currentEndTime);
+
+            if ((currentStart > currentEnd) || currentStart == currentEnd) {
+                alert("End time cannot be smaller than start time or not Equal than");
+                currentRow.querySelector(`#startTime${days}${rand}`).value = '';
+                currentRow.querySelector(`#endTime${days}${rand}`).value = '';
+                return false;
+            }
+
+            let overlap = false;
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                if (row.id === `schedulesROW${days}${rand}`) continue;
+
+                const otherStartTime = row.querySelector(`#startTime${days}${row.id.split(days)[1]}`).value;
+                const otherEndTime = row.querySelector(`#endTime${days}${row.id.split(days)[1]}`).value;
+
+                if (!otherStartTime || !otherEndTime) continue;
+
+                const otherStart = timeToMinutes(otherStartTime);
+                const otherEnd = timeToMinutes(otherEndTime);
+
+                if ((currentStart < otherEnd && currentEnd > otherStart) ||
+                    (currentStart >= otherStart && currentStart < otherEnd) ||
+                    (currentEnd > otherStart && currentEnd <= otherEnd)) {
+                    overlap = true;
+                    break;
+                }
+            }
+
+            if (overlap) {
+                alert('Time overlaps with another schedule.');
+                currentRow.querySelector(`#startTime${days}${rand}`).value = '';
+                currentRow.querySelector(`#endTime${days}${rand}`).value = '';
+                return false;
+            }
         }
 
+        function addMoreSchedules(days, itemId) {
+            const rand = Math.floor(Math.random() * 9000) + 1000;
+            const schedulesParent = document.getElementById(`schedules${days}${itemId}`);
 
-   
-            // const addNewTimeLinks = document.querySelectorAll(".add-new-time-m");
-            // addNewTimeLinks.forEach(function (link) {
-            //     link.addEventListener("click", function () {
-            //         const parentElement = link.closest(".day-time");
-            //         const clone = parentElement.cloneNode(true);
-            //         parentElement.parentNode.appendChild(clone);
-            //         deleteitem();
-            //     });
-            // });
+            const newRow = document.createElement('div');
+            newRow.classList.add('row', 'px-2', 'pb-3');
+            newRow.id = `schedulesROW${days}${rand}`;
+            newRow.innerHTML = `
+                                <div class="col-md-4 p-0 d-flex justify-content-center align-items-center">
+                                    <div class="input-group">
+                                        <input type="time" class="custom-time-input timepicker form-control form-inputs-parent"
+                                            id="startTime${days}${rand}" name="start_time[${days}][]"
+                                            placeholder="HH : MM" required onblur="checkTime('${days}', '${itemId}', '${rand}')" />
+                                    </div>
+                                </div>
+                                <div class="col-md-1 p-0 text-center d-flex justify-content-center align-items-center">
+                                    <p class="center-text m-0"><strong>To</strong></p>
+                                </div>
+                                <div class="col-md-4 p-0 d-flex justify-content-center align-items-center">
+                                    <div class="input-group">
+                                        <input type="time" class="custom-time-input timepicker form-control form-inputs-parent"
+                                            id="endTime${days}${rand}" name="end_time[${days}][]"
+                                            placeholder="HH : MM" required onblur="checkTime('${days}', '${itemId}', '${rand}')" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 d-flex flex-row gap-4 flex-wrap justify-content-center align-items-center">
+                                    <i onclick="removeThis('${days}', '${rand}')" class="uil uil-multiply text-danger fs-5 icons-work"></i>
+                                </div>
+                            `;
+            schedulesParent.appendChild(newRow);
+        }
 
-            // function deleteitem() {
-            //     const deleteButtons = document.querySelectorAll(".day-time-delete");
-            //     deleteButtons.forEach(function (button) {
-            //         button.addEventListener("click", function () {
-            //             const parentElement = button.closest(".day-time");
-            //             if (parentElement) {
-            //                 parentElement.remove();
-            //             } else {
-            //                 console.log("Parent element not found");
-            //             }
-            //         });
-            //     });
-            // }
-       
-        
+        function removeThis(days, rand) {
+            const row = document.getElementById(`schedulesROW${days}${rand}`);
+            if (row) {
+                row.remove();
+            }
+        }
+
+        $(document).on('click', '.custom-time-input', function() {
+            this.showPicker(); // This opens the timepicker when any part of the input is clicked
+        })
     </script>
 @endpush

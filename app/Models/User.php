@@ -39,7 +39,8 @@ class User extends Authenticatable implements JWTSubject
         'qualification',
         'website',
         'language',
-        'career_objective'
+        'career_objective',
+        'current_profile_fill_step'
     ];
 
     /**

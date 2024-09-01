@@ -52,6 +52,7 @@ class ProfileController extends Controller
     public function index(Request $request)
     {
 
+        // dd(auth()->user());
         $profileEducation = fetch('GET', '/profile/education', body(['name' => '', 'page' => 1, 'limit' => 10]));
 
 
@@ -120,8 +121,6 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        // study_field
-        // school_degree
         $data = $request->except('mobile', '_token');
         $validator = Validator::make($data, [
             'first_name' => 'required',
@@ -139,6 +138,18 @@ class ProfileController extends Controller
                 'errors' => $validator->errors()
             ]);
         }
+
+        if(!empty($request->language)){
+            $data['language'] = implode(',',$request->language);
+        }
+        
+        $user = Auth()->user();
+        
+        if($user->current_profile_fill_step==0){
+            $data['current_profile_fill_step'] = 1;
+         }
+
+        
 
         $user = User::find(Auth()->user()->id);
         $user->update($data);
@@ -178,13 +189,13 @@ class ProfileController extends Controller
             \DB::beginTransaction();
 
             $educations[] =[
-                    'id' => $id,
+                    'id' => (int)$id,
                     'grade' => $request->input('grade'),
                     'school_name' => $request->input('school_name'),
                     'degree_name' => $request->input('degree_name'),
                     'field_of_study' => $request->input('field_of_study'),
-                    'start_date' => $request->input('start_date'),
-                    'end_date' => $request->input('end_date'),
+                   'start_date' => date('Y-m-d', strtotime($request->input('start_date'))),
+                    'end_date' => date('Y-m-d', strtotime($request->input('end_date'))),
                     'description' => $request->input('description')
                 ];
 
@@ -259,11 +270,19 @@ class ProfileController extends Controller
                     'end_date' => date('Y-m-d', strtotime($request->input('end_date'))),
                     'description' => $request->input('description')
                 ];
-    
+
             $response = ['educations' => $educations];
             // dd(body($response));
             $schools = fetch('POST','/profile/education',body($response));
             
+            
+            $user = Auth()->user();
+            if($user->current_profile_fill_step==1){
+                $user->current_profile_fill_step = 2;
+            }
+            $user->save();
+
+
             \DB::commit();
             return response()->json(['status'=>true,'message'=>'Education save successfully']);
         }
@@ -359,10 +378,10 @@ class ProfileController extends Controller
                     'type' => $request->input('company_type')
                 ],
                 'skills'=>['python','java'],
-                'INDUSTRY_NAME' => $request->input('industry_name'),
+                'industry_name' => $request->input('industry_name'),
                 'location_type' => $request->input('location_type'),
                 'currently_working' => $request->filled('currently_working'),
-                //'skills' => collect(json_decode($request->input('skills')))->pluck('value')->toArray(),
+                'skills' => collect(json_decode($request->input('skills')))->pluck('value')->toArray(),
                 'start_date' => date('Y-m-d', strtotime($request->input('start_date'))),
                 'end_date' => date('Y-m-d', strtotime($request->input('end_date'))),
                 'description' => $request->input('description')
@@ -440,7 +459,7 @@ class ProfileController extends Controller
                 ];
 
             $response = ['experiences' => $experiences];
-            
+
             $schools = fetch('PATCH', '/profile/experience', body($response));
             \DB::commit();
             return response()->json(['status' => true, 'message' => 'Experience save successfully']);
@@ -670,15 +689,54 @@ class ProfileController extends Controller
         $schools_fields = fetch('POST', '/profile/field_of_study_list', body(['name' => '', 'page' => 1, 'limit' => 10]));
         $company = fetch('POST', '/profile/company_list', body(['name' => '', 'page' => 1, 'limit' => 10]));
         $industry = fetch('POST', '/profile/industry_list', body(['name' => '', 'page' => 1, 'limit' => 10]));
+        $skills = fetch('POST', '/profile/experience_skill_list', body(['name' => '', 'page' => 1, 'limit' => 10]));
+        $designation_list = fetch('POST', '/profile/designation_list', body(['name' => '', 'page' => 1, 'limit' => 10]));
+
+        $skills = collect($skills['items'])->pluck('name')->toArray();
+        $designation_list = collect($designation_list['items'])->pluck('name')->toArray();
+        // dd($skills,$designation_list);
+
+
+
         $schools = json_encode(collect($schools['items'])->pluck('name')->toArray());
         $schools_degree = json_encode(collect($schools_degree['items'])->pluck('name')->toArray());
         $schools_fields = json_encode(collect($schools_fields['items'])->pluck('name')->toArray());
         $company = json_encode(collect($company['items'])->pluck('name')->toArray());
         $industry = json_encode(collect($industry['items'])->pluck('name')->toArray());
-        return view('frontend.dashboard-pages.main', compact('company', 'industry', 'schools', 'schools_degree', 'schools_fields', 'profileEducation', 'profileExperience'));
+
+
+        return view('frontend.dashboard-pages.main', compact('skills','designation_list','company', 'industry', 'schools', 'schools_degree', 'schools_fields', 'profileEducation', 'profileExperience'));
 
 
 
+    }
+
+    public function details($id){
+
+        $mentorDetails = fetch('GET', '/profile/public/'.$id, body(['name' => '', 'page' => 1, 'limit' => 10]));
+
+        return view('frontend.userDetailed',compact('mentorDetails'));
+    }
+
+
+    public function myProfile(){
+        $profileEducation = fetch('GET', '/profile/education', body(['name' => '', 'page' => 1, 'limit' => 10]));
+        $services = fetch('GET','/profile_service',body([]));
+
+        $profileExperience = fetch('GET', '/profile/experience', body(['name' => '', 'page' => 1, 'limit' => 10]));
+    
+
+        $schools = fetch('POST', '/profile/school_list', body(['name' => '', 'page' => 1, 'limit' => 10]));
+        $schools_degree = fetch('POST', '/profile/school_degree_list', body(['name' => '', 'page' => 1, 'limit' => 10]));
+        $schools_fields = fetch('POST', '/profile/field_of_study_list', body(['name' => '', 'page' => 1, 'limit' => 10]));
+        $company = fetch('POST', '/profile/company_list', body(['name' => '', 'page' => 1, 'limit' => 10]));
+        $industry = fetch('POST', '/profile/industry_list', body(['name' => '', 'page' => 1, 'limit' => 10]));
+        $schools = json_encode(collect($schools['items'])->pluck('name')->toArray());
+        $schools_degree = json_encode(collect($schools_degree['items'])->pluck('name')->toArray());
+        $schools_fields = json_encode(collect($schools_fields['items'])->pluck('name')->toArray());
+        $company = json_encode(collect($company['items'])->pluck('name')->toArray());
+        $industry = json_encode(collect($industry['items'])->pluck('name')->toArray());
+        return view('frontend.myProfile',compact('company', 'industry','services', 'schools', 'schools_degree', 'schools_fields', 'profileEducation', 'profileExperience'));
     }
 
 

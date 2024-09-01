@@ -55,10 +55,13 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()){
-		   return response()->json([
-			'status' => false,
-			'errors' => $validator->errors()
-			]);
+
+		//    return response()->json([
+		// 	'status' => false,
+		// 	'errors' => $validator->errors()
+		// 	]);
+        return redirect()->back()->withErrors($validator)->withInput();
+
 		}
         $mobile_number = $requestData['mobile'];
         $user = User::where('mobile',$requestData['mobile'])->first();
@@ -77,7 +80,7 @@ class LoginController extends Controller
     public function verifyOtp(Request $request){
         $data = $request->all();
         // dd($data['encoded_mobile_number']);
-        // $data['mobile'] = \Crypt::decrypt($data['encoded_mobile_number']);
+        //$data['mobile'] = \Crypt::decrypt($data['encoded_mobile_number']);
       
         $validator = Validator::make($data, [
             'mobile' => 'required|numeric|digits:10',
@@ -91,7 +94,7 @@ class LoginController extends Controller
 			]);
 		}
 
-        $user = \App\Models\User::where('mobile',$data['encoded_mobile_number'])->where('otp',$data['otp'])->first();
+        $user = \App\Models\User::where('mobile',$data['mobile'])->where('otp',$data['otp'])->first();
 
         if(!$user){
             return response()->json(['status'=>0,'errors'=>['otp'=>['Please enter a valid otp !']]]);
@@ -107,7 +110,7 @@ class LoginController extends Controller
         $payload = JWTFactory::sub($user->id)->data($userData)->make();
         $token   = JWTAuth::encode($payload);
         $user->jwt_token = $token->get();
-        $user->save();        
+        $user->save();
         
         return response()->json(['status'=>1,'message'=>'Login successfully']);
     }

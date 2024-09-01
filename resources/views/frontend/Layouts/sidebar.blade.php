@@ -1,7 +1,7 @@
 <div id="mySidebar" class="sidebar">
     <a href="#"
       ><img
-        src="./Images/Jobes-logo.png"
+        src="{{ asset('youAsk.png') }}"
         alt="adminPanelLogo"
         class="admin-Panel-Logo"
     /></a>
@@ -17,7 +17,7 @@
         </div>
         <div class="menu-tabs d-flex gap-2">
           <i class="uil uil-user"></i>
-          <a class="menu-tabs p-0 m-0" href="#">My profile</a>
+          <a class="menu-tabs p-0 m-0" href="{{ route('user.profile') }}">My profile</a>
         </div>
         {{-- <div class="menu-tabs d-flex gap-2">
           <i class="uil uil-bag"></i>
@@ -31,12 +31,12 @@
         </div>
         <div class="menu-tabs d-flex gap-2">
           <i class="uil uil-check"></i>
-          <a class="menu-tabs p-0 m-0" href="#">Availability</a>
+          <a class="menu-tabs p-0 m-0" href="{{route('availablity.index')}}">Availability</a>
         </div>
         <div class="menu-tabs d-flex gap-2">
           <i class="uil uil-file-landscape-alt"></i>
           <a class="menu-tabs p-0 m-0" href="{{ route('basicinfo') }}"
-            >Your information</a
+            >Profile Settings</a
           >
         </div>
       </div>

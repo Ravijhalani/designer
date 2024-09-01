@@ -3,7 +3,7 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Jobes</title>
+    <title>Youask- Get Skills Before Degree</title>
     @stack('css')
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -19,7 +19,7 @@
         integrity="sha512-SNbSEpyK7jz5R7yjTrilJOlK4sgtHMfZoNtERAd8VF6jj6fk0LdW4HT3RwOLYhZmKn4GRtsNCZfA8lJ/FmYfhw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.3/awesomplete.min.css" />
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Include Toastr CSS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -35,6 +35,23 @@
 
     .tagify__dropdown {
         z-index: 99999 !important;
+    }
+
+    .select2-container{
+    display: flow-root!important;
+    }
+
+    .select2-container .select2-selection--single{
+        height: 32px!important;
+    }
+
+    .dropdown-icon{
+        display: none!important;
+    }
+
+    .nice-select{
+            height: 34px!important;
+                line-height: 34px!important;
     }
 </style>
 
@@ -150,6 +167,11 @@
         // Initial call to start the refresh process
         refreshUserToken();
     });
+
+
+    console.log("{{ auth()->user()->id }}");
+
+    $(".select2").select2();
 </script>
 
 </html>

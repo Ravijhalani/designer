@@ -23,6 +23,8 @@
                         toastr.error('Please correct the errors and try again.');
                     } else {
                         toastr.success(response.message);
+                        window.location.href = "{{ route('basicinfo') }}#education-information";
+
 
                     }
                 },

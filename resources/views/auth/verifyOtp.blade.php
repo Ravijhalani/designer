@@ -33,7 +33,8 @@
                 <div class="row">
                   <div class="col-md-12 col-sm-12 col-12 pb-2">
                     <div>
-                      <img src="{{ asset('allAssets/Images/Frame 1000003431.png') }}" alt="logo" class="logo-image" />
+                      <img src="{{ asset('youAsk.png') }}" alt="Logo" class="logo-image">
+
                       <p class="head-one mt-3 mb-0">Login to your Account</p>
                       <p class="head-two">Let’s dive into your profile</p>
                     </div>

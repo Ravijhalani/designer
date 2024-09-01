@@ -32,7 +32,7 @@
                             <div class="row d-flex justify-content-center align-items-center">
                                 <div class="col-md-6 col-sm-12 col-12 pb-2">
                                     <label for="first_name" class="form-label">First Name</label>
-                                    <input type="text" class="form-control form-inputs-parent" id="first_name" name="first_name" value="{{ old('first_name', Auth::user()->first_name) }}" placeholder="Enter first name" />
+                                    <input type="text" class="form-control form-inputs-parent" id="first_name" name="first_name" value="{{ old('first_name', Auth::user()->name) }}" placeholder="Enter first name" />
                                     <span class="text-danger" id="first_name_error"></span>
                                 </div>
                                 <div class="col-md-6 col-sm-12 col-12 pb-2">
@@ -99,19 +99,23 @@
                             <input type="url" class="form-control form-inputs-parent" id="website" name="website" value="{{ old('website', Auth::user()->website) }}" placeholder="Enter website link" />
                             <span class="text-danger" id="website_error"></span>
                         </div>
+
+                        @php 
+                            $language =  Auth::user()->language ? explode(',',Auth::user()->language) : [];
+                        @endphp
                         <div class="col-md-6 col-sm-12 col-12">
                             <label for="language" class="form-label">Languages Known</label>
                             <div class="dropdown-wrapper">
-                                <select class="form-control form-inputs-parent" id="language" name="language">
-                                    <option value="" disabled selected>Select languages known</option>
-                                    <option value="hindi" @if (old('language') == 'hindi' || Auth::user()->language == 'hindi' ) selected @endif>Hindi</option>
-                                    <option value="english" @if (old('language') == 'english' || Auth::user()->language == 'english') selected @endif>English</option>
-                                    <option value="spanish" @if (old('language') == 'spanish' || Auth::user()->language == 'spanish') selected @endif>Spanish</option>
-                                    <option value="french" @if (old('language') == 'french' || Auth::user()->language == 'french') selected @endif>French</option>
-                                    <option value="german" @if (old('language') == 'german' || Auth::user()->language == 'german') selected @endif>German</option>
-                                    <option value="chinese" @if (old('language') == 'chinese' || Auth::user()->language == 'chinese') selected @endif>Chinese</option>
-                                    <option value="japanese" @if (old('language') == 'japanese' || Auth::user()->language == 'japanese') selected @endif>Japanese</option>
-                                    <option value="other" @if (old('language') == 'other' || Auth::user()->language == 'other') selected @endif>Other</option>
+                                <select class="form-control form-inputs-parent select2" multiple id="language" name="language[]">
+                            
+                                    <option value="hindi" @if (in_array('hindi',$language)) selected @endif>Hindi</option>
+                                    <option value="english" @if (in_array('english',$language)) selected @endif>English</option>
+                                    <option value="spanish" @if (in_array('spanish',$language)) selected @endif>Spanish</option>
+                                    <option value="french" @if (in_array('french',$language)) selected @endif>French</option>
+                                    <option value="german" @if (in_array('german',$language)) selected @endif>German</option>
+                                    <option value="chinese" @if (in_array('chinese',$language)) selected @endif>Chinese</option>
+                                    <option value="japanese" @if (in_array('japanese',$language)) selected @endif>Japanese</option>
+                                    <option value="other" @if (in_array('other',$language)) selected @endif>Other</option>
                                 </select>
                                 <span class="text-danger" id="language_error"></span>
                                 <span class="dropdown-icon">&#8964;</span>
@@ -128,7 +132,7 @@
                     <div class="row mt-3">
                         <div class="col-md-12 text-start">
                             <button type="submit" class="btn btn-form-submit">
-                                Update
+                                Update & Next
                             </button>
                         </div>
                     </div>
@@ -138,7 +142,4 @@
     </div>
 
 @include('frontend.dashboard-pages.scripts.basicinfo')
-<script>
 
-    
-</script>

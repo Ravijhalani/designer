@@ -3,6 +3,71 @@
 @section('content')
     @push('css')
         <link rel="stylesheet" href="{{ asset('allAssets/services.css') }}" />
+        <style>
+            :root {
+                --dot-size: 1.25rem;
+                --max-block-size: calc(var(--dot-size) * 5);
+                --dot-color: lch(80.94% 62.75 148.82);
+                --dot-color-transition-1: lch(59.2% 85.33 318.2);
+                --dot-color-transition-2: lch(95.29% 85.33 97.41);
+                --delay: 0ms;
+            }
+
+            body {
+                font-family: system-ui, sans-serif;
+                color: #f2f2f2;
+                background-color: #18181e;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+                font-weight: 800;
+                text-align: center;
+            }
+
+            .loader {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: calc(var(--dot-size) / 2);
+                block-size: var(--max-block-size);
+            }
+
+            .dot {
+                inline-size: var(--dot-size);
+                block-size: var(--dot-size);
+                border-radius: calc(var(--dot-size) / 2);
+                background: var(--dot-color);
+                -webkit-animation: y-grow 2s infinite ease-in-out;
+                animation: y-grow 2s infinite ease-in-out;
+                -webkit-animation-delay: calc(var(--delay) * 1ms);
+                animation-delay: calc(var(--delay) * 1ms);
+            }
+
+            @-webkit-keyframes y-grow {
+                25% {
+                    block-size: var(--max-block-size);
+                    background-color: var(--dot-color-transition-1);
+                }
+
+                50% {
+                    block-size: var(--dot-size);
+                    background-color: var(--dot-color-transition-2);
+                }
+            }
+
+            @keyframes y-grow {
+                25% {
+                    block-size: var(--max-block-size);
+                    background-color: var(--dot-color-transition-1);
+                }
+
+                50% {
+                    block-size: var(--dot-size);
+                    background-color: var(--dot-color-transition-2);
+                }
+            }
+        </style>
     @endpush
     <!---------------------content starts from here------------------>
     <div class="m-4 form-main-parent px-3 py-3 over-flow-class-all">
@@ -14,69 +79,6 @@
         <div>
             <p class="form-main-heading-two">Categories</p>
 
-            <!-- drop down for mobile section -->
-            <div class="dropdown">
-                <p>
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                        All Categories
-                    </button>
-                </p>
-                <div class="collapse" id="collapseExample">
-                    <div class="card card-body">
-                        <div class="container p-0 m-0">
-                            <ul class="nav nav-tabs gap-2" id="myTab" role="tablist">
-                                <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                    <button class="crousel-text nav-link active my-1 btn" id="tab-one"
-                                        data-bs-toggle="tab" data-bs-target="#one" type="button" role="tab"
-                                        aria-controls="one" aria-selected="true">Job & Referral</button>
-                                </li>
-                                <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                    <button class="crousel-text nav-link my-0 btn" id="tab-two" data-bs-toggle="tab"
-                                        data-bs-target="#two" type="button" role="tab" aria-controls="two"
-                                        aria-selected="false">Profile</button>
-                                </li>
-                                <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                    <button class="crousel-text nav-link my-0 btn" id="tab-three" data-bs-toggle="tab"
-                                        data-bs-target="#three" type="button" role="tab" aria-controls="three"
-                                        aria-selected="false">Contact</button>
-                                </li>
-                                <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                    <button disabled class="crousel-text nav-link my-0 btn" id="tab-three"
-                                        data-bs-toggle="tab" data-bs-target="#three" type="button" role="tab"
-                                        aria-controls="three" aria-selected="false">Contact</button>
-                                </li>
-                                <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                    <button disabled class="crousel-text nav-link my-0 btn" id="tab-three"
-                                        data-bs-toggle="tab" data-bs-target="#three" type="button" role="tab"
-                                        aria-controls="three" aria-selected="false">Contact</button>
-                                </li>
-                                <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                    <button disabled class="crousel-text nav-link my-0 btn" id="tab-three"
-                                        data-bs-toggle="tab" data-bs-target="#three" type="button" role="tab"
-                                        aria-controls="three" aria-selected="false">Contact</button>
-                                </li>
-                                <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                    <button disabled class="crousel-text nav-link my-0 btn" id="tab-three"
-                                        data-bs-toggle="tab" data-bs-target="#three" type="button" role="tab"
-                                        aria-controls="three" aria-selected="false">Contact</button>
-                                </li>
-                                <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                    <button disabled class="crousel-text nav-link my-0 btn" id="tab-three"
-                                        data-bs-toggle="tab" data-bs-target="#three" type="button" role="tab"
-                                        aria-controls="three" aria-selected="false">Contact</button>
-                                </li>
-                                <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                    <button class="crousel-text nav-link my-1 btn" id="tab-four" data-bs-toggle="tab"
-                                        data-bs-target="#four" type="button" role="tab" aria-controls="four"
-                                        aria-selected="true">Job & Referral</button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- --------------------crousel from here------------------ -->
 
             <div id="carouselExampleControls" class="carousel slide crousel-main-parent">
                 <div class="carousel-inner px-3">
@@ -84,63 +86,21 @@
                         <div class="d-flex gap-3 flex-wrap">
                             <div class="container">
                                 <ul class="nav nav-tabs gap-3" id="myTab" role="tablist">
-                                    <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                        <button class="crousel-text nav-link active my-1 btn" id="tab-one"
-                                            data-bs-toggle="tab" data-bs-target="#one" type="button" role="tab"
-                                            aria-controls="one" aria-selected="true">Job & Referral</button>
-                                    </li>
-                                    <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                        <button class="crousel-text nav-link my-0 btn" id="tab-two"
-                                            data-bs-toggle="tab" data-bs-target="#two" type="button" role="tab"
-                                            aria-controls="two" aria-selected="false">Profile</button>
-                                    </li>
-                                    <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                        <button class="crousel-text nav-link my-0 btn" id="tab-three"
-                                            data-bs-toggle="tab" data-bs-target="#three" type="button" role="tab"
-                                            aria-controls="three" aria-selected="false">Contact</button>
-                                    </li>
-                                    <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                        <button disabled class="crousel-text nav-link my-0 btn" id="tab-three"
-                                            data-bs-toggle="tab" data-bs-target="#three" type="button" role="tab"
-                                            aria-controls="three" aria-selected="false">Contact</button>
-                                    </li>
-                                    <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                        <button disabled class="crousel-text nav-link my-0 btn" id="tab-three"
-                                            data-bs-toggle="tab" data-bs-target="#three" type="button" role="tab"
-                                            aria-controls="three" aria-selected="false">Contact</button>
-                                    </li>
-                                    <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                        <button disabled class="crousel-text nav-link my-0 btn" id="tab-three"
-                                            data-bs-toggle="tab" data-bs-target="#three" type="button" role="tab"
-                                            aria-controls="three" aria-selected="false">Contact</button>
-                                    </li>
-                                    <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                        <button disabled class="crousel-text nav-link my-0 btn" id="tab-three"
-                                            data-bs-toggle="tab" data-bs-target="#three" type="button" role="tab"
-                                            aria-controls="three" aria-selected="false">Contact</button>
-                                    </li>
-                                    <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                        <button disabled class="crousel-text nav-link my-0 btn" id="tab-three"
-                                            data-bs-toggle="tab" data-bs-target="#three" type="button" role="tab"
-                                            aria-controls="three" aria-selected="false">Contact</button>
-                                    </li>
+                                    @foreach ($service as $k => $v)
+                                        <li class="crousel-text-parent my-0 nav-item " role="presentation">
+                                            <button data-type="{{ $v['code'] }}" class="crousel-text nav-link  my-1 btn "
+                                                id="tab-{{ $v['code'] }}" data-bs-toggle="tab"
+                                                data-bs-target="#{{ $v['code'] }}" type="button" role="tab"
+                                                aria-controls="{{ $v['code'] }}"
+                                                aria-selected="true">{{ $v['title'] }}</button>
+                                        </li>
+                                    @endforeach
+
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <div class="carousel-item">
-                        <div class="d-flex gap-3 flex-wrap">
-                            <div class="container">
-                                <ul class="nav nav-tabs gap-3" id="myTab" role="tablist">
-                                    <li class="crousel-text-parent my-0 nav-item" role="presentation">
-                                        <button class="crousel-text nav-link my-1 btn" id="tab-four"
-                                            data-bs-toggle="tab" data-bs-target="#four" type="button" role="tab"
-                                            aria-controls="four" aria-selected="true">Job & Referral</button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
                 <button class="carousel-control-prev d-flex justify-content-start" type="button"
                     data-bs-target="#carouselExampleControls" data-bs-slide="prev">
@@ -156,54 +116,67 @@
 
             <!-- --------------------ends here------------------ -->
         </div>
-        <div class="row">
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="one" role="tabpanel" aria-labelledby="home-tab">
-                    <div class="row">
-                        @forelse ($data as $key=>$item)
-                            <div class="col-lg-4 col-md-6 col-sm-12 col-12 pt-3">
-                                <div class="card-white px-3 py-3">
-                                    <div class="d-flex flex-row justify-content-between align-items-start flex-wrap">
-                                        <div>
-                                            <p class="cards-main-heading m-0">Information Technology</p>
-                                            <p class="cards-main-heading-two">{{ $item['company']['name'] }}</p>
-                                        </div>
-                                        <div class="d-flex justify-content-end align-items-start gap-2 flex-wrap mt-2">
-                                            <p class="status-text m-0">{{ $item['job_location_type'] }}</p>
-                                            <i class="uil uil-ellipsis-v"></i>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="d-flex flex-column justify-content-center align-items-start w-100">
-                                            <p class="cards-main-heading-two">Designation</p>
-                                            <p class="cards-main-heading m-0">{{ $item['designation']['name'] }}</p>
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center align-items-start w-100">
-                                            <p class="cards-main-heading-two">Experience</p>
-                                            <p class="cards-main-heading m-0">{{ $item['experience_years'] }} Years</p>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div
-                                            class="d-flex flex-column justify-content-center align-items-start w-100 mt-4">
-                                            <p class="cards-main-heading-two">Description</p>
-                                            <p class="cards-main-heading m-0">{{ $item['description'] }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <p>No service available</p>
-                        @endforelse
 
-                    </div>
-                </div>
-
+        <main id="loader" style="display: none;">
+            <div class="loader js-loader" data-delay="200">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
             </div>
+        </main>
+
+        <div class="row" id="ServiceData">
+
+
+
+            @include('service-data')
+
+
+
         </div>
     </div>
 @endsection
 
 @push('js')
     <script src="{{ asset('allAssets/servicesList.js') }}"></script>
+    <script>
+        const loader = document.querySelector(".loader");
+        const delay = +loader.dataset.delay || 200;
+        const dots = loader.querySelectorAll(".loader .dot");
+        dots.forEach((dot, index) => {
+            dot.style = `--delay: ${delay * index}`;
+        });
+
+
+        $(document).on('click', '.crousel-text', function() {
+
+            $.ajax({
+                url: '{{ route('service.type.ajax') }}',
+                method: "GET",
+                data: {
+                    service_category: $(this).attr('data-type')
+                },
+                beforeSend: function() {
+                    $("#ServiceData").html('');
+                    $("#loader").show();
+                },
+                success: function(data) {
+
+                    setTimeout(function() {
+                        $("#loader").hide();
+
+                        if (!data.status) {
+                            popupMsg('Error', data.message, 'error');
+                        }
+
+                        $("#ServiceData").html(data.data);
+                    }, 1500);
+
+                }
+            })
+
+        });
+    </script>
 @endpush

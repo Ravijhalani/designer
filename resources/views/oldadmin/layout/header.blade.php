@@ -16,7 +16,7 @@
     <meta name="keywords" content="" />
     <meta name="author" content="Codedthemes" />
 
-    <link rel="icon" href="../assets/images/favicon.ico" type="image/x-icon" />
+    {{-- <link rel="icon" href="../assets/images/favicon.ico" type="image/x-icon" /> --}}
 
     <link rel="stylesheet" href="{{asset('admins/assets/css/style.css')}}" />
     <!-- <link rel="stylesheet" href="../assets/css/plugins/style.css" /> -->

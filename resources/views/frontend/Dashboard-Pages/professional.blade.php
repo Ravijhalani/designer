@@ -121,19 +121,20 @@
 
                                                                 </div>
                                                             </div> --}}
+
                                                             <div class="col-md-6 col-sm-12 col-12 pb-2">
-                                                                <label for="startDate" class="form-label">Starting
+                                                                <label for="startDate" class="form-label ">Starting
                                                                     period</label>
                                                                 <input type="date"
-                                                                    class="form-control form-inputs-parent"
-                                                                    id="start_date" name="start_date" required />
+                                                                    class="form-control form-inputs-parent "
+                                                                    id="professional_start_date" name="start_date" required />
                                                             </div>
                                                             <div class="col-md-6 col-sm-12 col-12 pb-2">
-                                                                <label for="endDate" class="form-label">Ending
+                                                                <label for="endDate" class="form-label ">Ending
                                                                     period</label>
                                                                 <input type="date"
-                                                                    class="form-control form-inputs-parent"
-                                                                    id="end_date" name="end_date" required />
+                                                                    class="form-control form-inputs-parent "
+                                                                    id="professional_end_date" name="end_date" required />
                                                             </div>
 
                                                             <div class="col-md-12 col-sm-12 col-12">
@@ -209,10 +210,10 @@
                                             <a form-url="{{ route('profile.experience.update', ['id' => $Experience['id']]) }}"
                                                 data-url="{{ route('profile.experience.edit', $Experience['id']) }}"
                                                 style="float:right" href="javascript:void(0)"
-                                                class="experienceEditButton add-more-button">Edit ✎</a>
+                                                class="experienceEditButton add-more-button  text-success btn"><i class="fa fa-pencil"></i>  </a> &nbsp;&nbsp;
                                             <a data-url="{{ route('delete.profile.experience', $Experience['id']) }}"
                                                 style="float:right" href="javascript:void(0)"
-                                                class="experienceDeleteButton add-more-button">Delete </a>
+                                                class="experienceDeleteButton add-more-button text-danger btn"><i class="fa fa-trash"></i> </a>
 
                                         </p>
 
@@ -268,7 +269,7 @@
 
 
                     <div class="modal" id="experience-modal-form">
-                        <div class="modal-dialog  modal-dialog-centered ">
+                        <div class="modal-dialog modal-lg modal-dialog-centered ">
                             <div class="modal-content sub-bg">
                                 <div class="modal-header subs-header">
                                     <h4 class="modal-title">Update Experience</h4>
@@ -312,151 +313,79 @@
 
                     @push('professional-js')
                         <script>
-                            const webTechnologies = [
-                                "HTML",
-                                "CSS",
-                                "JavaScript",
-                                "React",
-                                "Angular",
-                                "Vue.js",
-                                "Node.js",
-                                "Express.js",
-                                "Django",
-                                "Flask",
-                                "Ruby on Rails",
-                                "ASP.NET",
-                                "JavaServer Faces (JSF)",
-                                "Spring Framework",
-                                "jQuery",
-                                "Bootstrap",
-                                "Sass",
-                                "Less",
-                                "TypeScript",
-                                "RESTful API",
-                                "WebSocket",
-                                "JSON",
-                                "XML",
-                                "Webpack",
-                                "Babel",
-                                "Docker",
-                                "Kubernetes",
-                                "Git",
-                                "MongoDB",
-                                "MySQL",
-                                "PostgreSQL",
-                                "Firebase",
-                                "OAuth",
-                                "JWT (JSON Web Tokens)",
-                                "SSL/TLS",
-                                "HTTP/2",
-                                "WebSockets",
-                                "Service Workers",
-                                "Progressive Web Apps (PWAs)",
-                                "Responsive Web Design",
-                                "WebAssembly",
-                                "WebRTC",
-                                "Canvas API",
-                                "WebGL",
-                                "WebSockets",
-                                "IndexedDB",
-                                "LocalStorage",
-                                "Cookies",
-                                "Web Workers",
-                                "Server-Sent Events (SSE)",
-                                "Microservices",
-                                "Serverless Architecture",
-                                "Single Page Applications (SPAs)",
-                                "Content Delivery Network (CDN)",
-                                "Static Site Generators (SSG)",
-                                "Jamstack",
-                                "API Gateway",
-                                "GraphQL",
-                                "OpenAPI (Swagger)",
-                                "Web Accessibility (A11y)",
-                                "Search Engine Optimization (SEO)",
-                                "WebAssembly",
-                                "WebVR",
-                                "Augmented Reality (AR) on the Web",
-                                "Virtual Reality (VR) on the Web",
-                                "Node.js",
-                                "Django (Python)",
-                                "Flask (Python)",
-                                "Ruby on Rails",
-                                ".NET",
-                                "Spring Framework (Java)",
-                                "Express.js",
-                                "ASP.NET",
-                                "Laravel (PHP)",
-                                "Symfony (PHP)",
-                                "Ruby on Rails",
-                                "Phoenix (Elixir)",
-                                "FastAPI (Python)",
-                                "Koa.js",
-                                "Hapi.js",
-                                "ASP.NET Core",
-                                "Grails (Groovy)",
-                                "Adonis.js",
-                                "NestJS",
-                                "Meteor.js",
-                                "Actix (Rust)",
-                                "Gin (Go)",
-                                "Play Framework (Scala/Java)",
-                                "CakePHP (PHP)",
-                                "Slim (PHP)",
-                                "Sails.js",
-                                "Feathers.js",
-                            ];
-                            var itDesignations = [
-                                "Software Engineer",
-                                "Senior Software Engineer",
-                                "Software Developer",
-                                "Web Developer",
-                                "Frontend Developer",
-                                "Backend Developer",
-                                "Full Stack Developer",
-                                "DevOps Engineer",
-                                "System Administrator",
-                                "Network Administrator",
-                                "Database Administrator",
-                                "IT Manager",
-                                "IT Director",
-                                "Chief Technology Officer (CTO)",
-                                "Data Scientist",
-                                "Data Analyst",
-                                "Business Analyst",
-                                "Quality Assurance Engineer",
-                                "UI/UX Designer",
-                                "Security Analyst",
-                                "Technical Support Specialist",
-                                "Systems Analyst",
-                                "Network Engineer",
-                                "Cloud Solutions Architect",
-                                "Product Manager",
-                                "Project Manager",
-                                "Scrum Master",
-                                "IT Consultant",
-                                "Technical Writer",
-                                "IT Trainer",
-                                "Cybersecurity Specialist",
-                                "Machine Learning Engineer",
-                                "Artificial Intelligence (AI) Engineer",
-                                "Blockchain Developer",
-                                "Software Architect",
-                                "Technical Lead",
-                                "Release Manager",
-                                "IT Auditor",
-                                "IT Compliance Analyst",
-                                "Business Intelligence Analyst",
-                                "ERP Consultant",
-                                "Database Developer",
-                                "Network Security Engineer",
-                                "IT Support Specialist",
-                                "User Interface (UI) Developer",
-                                "User Experience (UX) Researcher",
-                                "Mobile App Developer",
-                                "Systems Administrator",
-                                "Desktop Support Technician"
-                            ];
+                            
+                        const webTechnologies = {!!json_encode($skills)!!};
+                        var itDesignations = {!!json_encode($designation_list)!!};
+
+
+                                // $('#profession_currently_working').change(function () {
+                                //     toggleEndDate();
+                                // });
+
+                                $(document).on('change','#profession_currently_working',function(){
+                                    toggleEndDate();
+                                })
+
+                               
+
+                                function toggleEndDate() {
+                                    if ($('#profession_currently_working').is(':checked')) {
+                                        $('#edit_professional_end_date').closest('.col-md-6').hide(); // Hide the end date field
+                                        $('#edit_professional_end_date').val(''); // Clear the value of the end date field
+                                    } else {
+                                        $('#edit_professional_end_date').closest('.col-md-6').show(); // Show the end date field
+                                    }
+                                }
+                            
+
+                             $(document).on('change', '#edit_professional_start_date', function() {
+                                const startDateTimeInput = document.getElementById('edit_professional_start_date');
+                                const endDateTimeInput = document.getElementById('edit_professional_end_date');
+                                
+                                // Initialize the start date/time picker
+                                const startDateTimePicker = flatpickr(startDateTimeInput, {
+                                    enableTime: false,
+                                    dateFormat: 'd-m-Y',
+                                    minuteIncrement: 1,
+                                    onChange: function(selectedDates, dateStr, instance) {
+                                        // Update the end date/time picker's minDate to the selected start date/time
+                                        if (selectedDates.length > 0) {
+                                            const selectedStartDate = selectedDates[0];
+                                            
+                                            // Initialize or update the end date/time picker with minDate
+                                            flatpickr(endDateTimeInput, {
+                                                enableTime: false,
+                                                dateFormat: 'd-m-Y',
+                                                minuteIncrement: 1,
+                                                minDate: selectedStartDate // Set the minDate based on the start date
+                                            });
+                                        }
+                                    },
+                                });
+                            });
+
+
+                            const startDateTimeInput = document.getElementById('professional_start_date');
+                            const endDateTimeInput = document.getElementById('professional_end_date');
+                        
+                            // Initialize the start date/time picker
+                            flatpickr(startDateTimeInput, {
+                                enableTime: false,
+                                dateFormat: 'd-m-Y',
+                                minuteIncrement: 1,
+                                onChange: function(selectedDates, dateStr, instance) {
+                                    // Update the end date/time picker's minDate to the selected start date/time
+                                    endDateTimePicker.set('minDate', dateStr);
+                                },
+                            });
+
+                            // Initialize the end date/time picker
+                            const endDateTimePicker = flatpickr(endDateTimeInput, {
+                                enableTime: false,
+                                dateFormat: 'd-m-Y',
+                                minuteIncrement: 1,
+                            });
+                            
 
                             // Custom method to check for special characters
                             $.validator.addMethod("noSpecialChars", function(value, element) {
@@ -561,29 +490,37 @@
                                     success: function(data) {
                                         $('#experience-form-data').html(data);
 
-                                        Autoomplete("experience-update-form #industry_name", {!! $industry !!})
-                                        Autoomplete("experience-update-form #designation_name", itDesignations)
-                                        Autoomplete("experience-update-form #company_name", {!! $company !!})
+                                        autoComplete("#experience-update-form #industry_name", {!! $industry !!})
+                                        autoComplete("#experience-update-form #designation_name", itDesignations)
+                                        autoComplete("#experience-update-form #company_name", {!! $company !!})
 
                                         $('#experience-update-form #employment_type').niceSelect();
                                         $('#experience-update-form #company_type').niceSelect();
                                         $('#experience-update-form #location_type').niceSelect();
 
-                                        $("#experience-update-form .professional_start_date").datepicker({
-                                            dateFormat: 'dd-mm-yy',
-                                            onSelect: function(selectedDate) {
-                                                $("#experience-update-form .professional_end_date").datepicker(
-                                                    "option", "minDate", selectedDate);
-                                            }
+
+                                         const startDateTimeInput = document.getElementById('edit_professional_start_date');
+                                        const endDateTimeInput = document.getElementById('edit_professional_end_date');
+                                    
+                                        // Initialize the start date/time picker
+                                        flatpickr(startDateTimeInput, {
+                                            enableTime: false,
+                                            dateFormat: 'd-m-Y',
+                                            minuteIncrement: 1,
+                                            onChange: function(selectedDates, dateStr, instance) {
+                                                // Update the end date/time picker's minDate to the selected start date/time
+                                                endDateTimePicker.set('minDate', dateStr);
+                                            },
                                         });
 
-                                        $("#experience-update-form .professional_end_date").datepicker({
-                                            dateFormat: 'dd-mm-yy',
-                                            onSelect: function(selectedDate) {
-                                                $("#experience-update-form .professional_start_date")
-                                                    .datepicker("option", "minDate", selectedDate);
-                                            }
+                                        // Initialize the end date/time picker
+                                        const endDateTimePicker = flatpickr(endDateTimeInput, {
+                                            enableTime: false,
+                                            dateFormat: 'd-m-Y',
+                                            minuteIncrement: 1,
                                         });
+
+                                        
 
 
                                         tagify1 = new Tagify($("#experience-update-form #skills")[0], {
